@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bài Test 111 Tư Tưởng.</title>
+    <title>111 Ideologies TEST</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
+    <!-- TẢI THƯ VIỆN REALTIME DATABASE -->
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
 
@@ -20,7 +21,9 @@
     <div id="root"></div>
 
     <script type="text/babel">
-
+        // ==========================================
+        // CONFIG FIREBASE
+        // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyCln1z8mRd1Aq-Hdy8GMHXm-37gQ-9VMtk",
             authDomain: "testtutuong.firebaseapp.com",
@@ -40,209 +43,292 @@
 
         const { useState, useMemo, useEffect } = React;
 
+        // ==========================================
+        // UI TRANSLATIONS (Từ điển Giao diện)
+        // ==========================================
+        const tUI = {
+            vi: {
+                subtitle: "TÌM HIỂU VỀ XU HƯỚNG CHÍNH TRỊ BẢN THÂN",
+                title1: "Bài Test 111",
+                title2: "Tư tưởng Chính trị",
+                desc: "Làm 60 câu hỏi phân bổ chéo để tìm ra tư tưởng khớp với bạn từ tận 111 hệ tư tưởng. Dựa trên mô hình 9 trục tọa độ yếu tố.",
+                startBtn: "Bắt đầu Trắc nghiệm",
+                progress: "Tiến trình trắc nghiệm",
+                backBtn: "Quay lại câu trước",
+                reportTitle: "Báo Cáo Tọa Độ Tư Tưởng",
+                reportDesc: "Đối chiếu đa chiều với 111 Hệ tư tưởng trên toàn thế giới",
+                bestMatch: "Hệ tư tưởng khớp nhất",
+                matchRate: "Độ tương thích:",
+                cloudStats: "Thống kê Cộng đồng",
+                syncing: "Đang đồng bộ dữ liệu với Cloud...",
+                notConfigured: "Chưa cấu hình Firebase.",
+                collecting: "Hệ thống đang thu thập dữ liệu (Hiện có: ",
+                collecting2: " lượt làm bài). Cần tối thiểu 5 lượt để phân tích % hệ tư tưởng.",
+                stat1: "Trong tổng số ",
+                stat2: " người đã làm bài, có ",
+                stat3: " người chia sẻ tư tưởng giống bạn (Chiếm tỉ lệ ",
+                radarTitle: "Biểu đồ Cường độ Nhận thức",
+                radarSub: "Tâm = Trung Lập | Viền = Cực Đoan",
+                runnerUps: "Sự pha trộn lân cận",
+                matchRank: "Khớp thứ",
+                axesDetail: "Phân tích Tọa độ 9 Trục chi tiết",
+                openLib: "Mở Bách khoa toàn thư (Tìm kiếm 111 Tư tưởng)",
+                closeLib: "Đóng Bách khoa toàn thư",
+                retry: "↻ Làm lại bài test",
+                libTitle: "Thư viện 111 Tư tưởng Chính trị",
+                searchPH: "Tìm kiếm tư tưởng...",
+                theoryCoords: "Chỉ số tọa độ lý thuyết:",
+                adminArea: "Khu vực Admin",
+                secretPH: "Nhập mã bí mật...",
+                unlock: "Mở Khóa",
+                history: "Lịch sử 50 người làm gần nhất:",
+                balanced: "Cân bằng"
+            },
+            en: {
+                subtitle: "DISCOVER YOUR POLITICAL LEANINGS",
+                title1: "111 Ideologies",
+                title2: "Political Compass",
+                desc: "Answer 60 cross-distributed questions to find your exact match among 111 global ideologies. Based on a 9-axis coordinate model.",
+                startBtn: "Start the Quiz",
+                progress: "Quiz Progress",
+                backBtn: "Back to previous question",
+                reportTitle: "Ideological Coordinate Report",
+                reportDesc: "Multi-dimensional comparison with 111 global ideologies",
+                bestMatch: "Closest Match",
+                matchRate: "Compatibility:",
+                cloudStats: "Community Statistics",
+                syncing: "Syncing data with Cloud...",
+                notConfigured: "Firebase not configured.",
+                collecting: "System is collecting data (Currently: ",
+                collecting2: " tests taken). Minimum 5 tests required for % analysis.",
+                stat1: "Out of ",
+                stat2: " people who took the test, ",
+                stat3: " share your exact ideology (Accounting for ",
+                radarTitle: "Cognitive Intensity Radar",
+                radarSub: "Center = Neutral | Edge = Extremist",
+                runnerUps: "Neighboring Ideologies",
+                matchRank: "Match #",
+                axesDetail: "Detailed 9-Axis Coordinate Analysis",
+                openLib: "Open Encyclopedia (Search 111 Ideologies)",
+                closeLib: "Close Encyclopedia",
+                retry: "↻ Retake the test",
+                libTitle: "Encyclopedia of 111 Ideologies",
+                searchPH: "Search ideologies...",
+                theoryCoords: "Theoretical Coordinates:",
+                adminArea: "Admin Area",
+                secretPH: "Enter secret code...",
+                unlock: "Unlock",
+                history: "Last 50 test results:",
+                balanced: "Balanced"
+            }
+        };
+
+        // ==========================================
+        // DỮ LIỆU ĐÃ TÍCH HỢP SONG NGỮ (VI & EN)
+        // ==========================================
         const axes = [
-          { id: 'power', name: 'Quyền lực', left: 'Cá nhân', right: 'Tập quyền', color: 'bg-blue-500', description: 'Đo lường sự tập trung quyền lực: Ủng hộ tự quyết cá nhân/địa phương vs. Nhà nước trung ương kiểm soát.' },
-          { id: 'political', name: 'Chính trị', left: 'Dân chủ', right: 'Độc quyền', color: 'bg-red-500', description: 'Mức độ tham gia chính trị: Bầu cử tự do, quyết định số đông vs. Cá nhân/Đảng phái nắm toàn quyền.' },
-          { id: 'diplomatic', name: 'Ngoại giao', left: 'Toàn cầu', right: 'Quốc gia', color: 'bg-indigo-500', description: 'Góc nhìn quốc tế: Hướng tới hội nhập, xóa biên giới vs. Bảo vệ chủ quyền, văn hóa cốt lõi.' },
-          { id: 'military', name: 'Quân sự', left: 'Hòa bình', right: 'Vũ lực', color: 'bg-orange-500', description: 'Sử dụng vũ lực: Ưu tiên ngoại giao, giải trừ quân bị vs. Duy trì sức mạnh quân đội áp đảo.' },
-          { id: 'civil', name: 'Dân sự', left: 'Tự do', right: 'An ninh', color: 'bg-teal-500', description: 'Quyền riêng tư: Tự do cá nhân là bất khả xâm phạm vs. Nhà nước giám sát để đảm bảo trật tự.' },
-          { id: 'economic', name: 'Kinh tế', left: 'Bình đẳng', right: 'Thị trường', color: 'bg-green-500', description: 'Phân phối tài sản: Đánh thuế và kiểm soát để tạo công bằng vs. Thị trường tự do, tư nhân hóa.' },
-          { id: 'religious', name: 'Tôn giáo', left: 'Thế tục', right: 'Tôn giáo', color: 'bg-yellow-500', description: 'Vai trò tín ngưỡng: Tách biệt tôn giáo khỏi luật pháp vs. Lấy giáo lý làm nền tảng đạo đức.' },
-          { id: 'cultural', name: 'Văn hóa', left: 'Tiến bộ', right: 'Truyền thống', color: 'bg-pink-500', description: 'Chuẩn mực xã hội: Cởi mở với đa dạng giới và lối sống mới vs. Bảo tồn giá trị gia đình cũ.' },
-          { id: 'societal', name: 'Xã hội', left: 'Đa văn', right: 'Đồng hóa', color: 'bg-purple-500', description: 'Hội nhập văn hóa: Tôn trọng bản sắc người nhập cư vs. Yêu cầu họ thay đổi giống văn hóa bản địa.' },
+          { id: 'power', name: 'Quyền lực', nameEn: 'Power', left: 'Cá nhân', leftEn: 'Individual', right: 'Tập quyền', rightEn: 'Authority', color: 'bg-blue-500', description: 'Đo lường sự tập trung quyền lực: Ủng hộ tự quyết cá nhân/địa phương vs. Nhà nước trung ương kiểm soát.', descriptionEn: 'Measures power concentration: Individual/local autonomy vs. Centralized state control.' },
+          { id: 'political', name: 'Chính trị', nameEn: 'Political', left: 'Dân chủ', leftEn: 'Democracy', right: 'Độc quyền', rightEn: 'Autocracy', color: 'bg-red-500', description: 'Mức độ tham gia chính trị: Bầu cử tự do, quyết định số đông vs. Cá nhân/Đảng phái nắm toàn quyền.', descriptionEn: 'Political participation: Free elections and majority rule vs. Single individual/party total rule.' },
+          { id: 'diplomatic', name: 'Ngoại giao', nameEn: 'Diplomatic', left: 'Toàn cầu', leftEn: 'Global', right: 'Quốc gia', rightEn: 'Nation', color: 'bg-indigo-500', description: 'Góc nhìn quốc tế: Hướng tới hội nhập, xóa biên giới vs. Bảo vệ chủ quyền, văn hóa cốt lõi.', descriptionEn: 'International view: Integration and open borders vs. Protecting sovereignty and core culture.' },
+          { id: 'military', name: 'Quân sự', nameEn: 'Military', left: 'Hòa bình', leftEn: 'Peace', right: 'Vũ lực', rightEn: 'Militarist', color: 'bg-orange-500', description: 'Sử dụng vũ lực: Ưu tiên ngoại giao, giải trừ quân bị vs. Duy trì sức mạnh quân đội áp đảo.', descriptionEn: 'Use of force: Diplomacy and disarmament vs. Maintaining overwhelming military strength.' },
+          { id: 'civil', name: 'Dân sự', nameEn: 'Civil', left: 'Tự do', leftEn: 'Liberty', right: 'An ninh', rightEn: 'Security', color: 'bg-teal-500', description: 'Quyền riêng tư: Tự do cá nhân là bất khả xâm phạm vs. Nhà nước giám sát để đảm bảo trật tự.', descriptionEn: 'Privacy: Inviolable individual freedom vs. State surveillance to ensure public order.' },
+          { id: 'economic', name: 'Kinh tế', nameEn: 'Economic', left: 'Bình đẳng', leftEn: 'Equality', right: 'Thị trường', rightEn: 'Markets', color: 'bg-green-500', description: 'Phân phối tài sản: Đánh thuế và kiểm soát để tạo công bằng vs. Thị trường tự do, tư nhân hóa.', descriptionEn: 'Wealth distribution: Taxation for equity vs. Free markets and privatization.' },
+          { id: 'religious', name: 'Tôn giáo', nameEn: 'Religious', left: 'Thế tục', leftEn: 'Secular', right: 'Tôn giáo', rightEn: 'Religious', color: 'bg-yellow-500', description: 'Vai trò tín ngưỡng: Tách biệt tôn giáo khỏi luật pháp vs. Lấy giáo lý làm nền tảng đạo đức.', descriptionEn: 'Role of faith: Separation of church and state vs. Dogma as the foundation of law and morals.' },
+          { id: 'cultural', name: 'Văn hóa', nameEn: 'Cultural', left: 'Tiến bộ', leftEn: 'Progress', right: 'Truyền thống', rightEn: 'Tradition', color: 'bg-pink-500', description: 'Chuẩn mực xã hội: Cởi mở với đa dạng giới và lối sống mới vs. Bảo tồn giá trị gia đình cũ.', descriptionEn: 'Social norms: Openness to gender diversity and new lifestyles vs. Preserving traditional family values.' },
+          { id: 'societal', name: 'Xã hội', nameEn: 'Societal', left: 'Đa văn', leftEn: 'Multi-culti', right: 'Đồng hóa', rightEn: 'Assimilation', color: 'bg-purple-500', description: 'Hội nhập văn hóa: Tôn trọng bản sắc người nhập cư vs. Yêu cầu họ thay đổi giống văn hóa bản địa.', descriptionEn: 'Cultural integration: Respecting immigrant identity vs. Requiring assimilation into native culture.' },
         ];
 
+        // 111 TƯ TƯỞNG (Đã thêm cấu trúc nameEn, descriptionEn cho tất cả. Dịch mẫu một vài cái đầu)
         const ideologies = [
-          { name: "Chủ nghĩa Trung dung (Centrism)", description: "Giữ quan điểm ôn hòa, cân bằng và thực dụng. Tránh xa các thái cực cực đoan.", stats: { power: 0, political: -2, diplomatic: 0, military: 0, civil: 0, economic: 0, religious: 0, cultural: 0, societal: 0 } },
-          { name: "Trung dung Cấp tiến (Radical Centrism)", description: "Không trung thành với triết lý nào. Sẵn sàng dùng độc tài, cộng sản hay tư bản để giải quyết vấn đề.", stats: { power: 0, political: 0, diplomatic: 0, civil: 0, economic: 0, religious: 0, cultural: -2, societal: 0 } },
-          { name: "Tự do Hiện đại (Modern Liberalism)", description: "Ủng hộ dân chủ, tự do cá nhân kết hợp với nền kinh tế thị trường có sự điều tiết và phúc lợi vừa phải.", stats: { power: -2, political: -5, diplomatic: -4, civil: -4, economic: 2, religious: -4, cultural: -5, societal: -5 } },
-          { name: "Con đường Thứ ba (Third Way)", description: "Dung hòa giữa chính sách kinh tế cánh hữu (thị trường) và chính sách xã hội cánh tả (bình đẳng, tiến bộ).", stats: { power: 2, diplomatic: -2, economic: 4, cultural: -2, societal: -2 } },
-          { name: "Bảo thủ Ôn hòa (Liberal Conservatism)", description: "Bảo vệ truyền thống và ổn định, nhưng vẫn chấp nhận các quyền tự do dân chủ và thị trường mở.", stats: { power: 2, political: -4, civil: 2, economic: 4, religious: 3, cultural: 3, societal: 3 } },
-          { name: "Quốc gia Dân chủ Ôn hòa (Civic Nationalism)", description: "Tự hào dân tộc dựa trên giá trị hiến pháp, dân chủ và hòa nhập, thay vì phân biệt sắc tộc.", stats: { political: -5, diplomatic: 5, societal: 3, cultural: 2 } },
-          { name: "Bảo thủ Gia trưởng (Paternalistic Conservatism)", description: "Văn hóa truyền thống cứng rắn, nhưng kinh tế ủng hộ nhà nước can thiệp lo phúc lợi như 'người cha'.", stats: { power: 5, political: 3, civil: 4, economic: -4, religious: 6, cultural: 6, societal: 5 } },
-          { name: "Tự do Trật tự (Ordoliberalism)", description: "Thị trường tự do nhưng nhà nước phải duy trì luật lệ cứng rắn để chống độc quyền và đảm bảo cạnh tranh.", stats: { power: 2, civil: 0, economic: 3, cultural: 0 } },
-          { name: "Bảo thủ Tự do (Libertarian Conservatism)", description: "Nhà nước nhỏ, kinh tế tự do, nhưng cá nhân tự nguyện sống theo giá trị đạo đức truyền thống và tôn giáo.", stats: { power: -6, civil: -5, economic: 8, religious: 6, cultural: 7 } },
+          { name: "Chủ nghĩa Trung dung (Centrism)", nameEn: "Centrism", description: "Giữ quan điểm ôn hòa, cân bằng và thực dụng. Tránh xa các thái cực cực đoan.", descriptionEn: "Maintains a moderate, balanced, and pragmatic view. Avoids extreme poles.", stats: { power: 0, political: -2, diplomatic: 0, military: 0, civil: 0, economic: 0, religious: 0, cultural: 0, societal: 0 } },
+          { name: "Trung dung Cấp tiến (Radical Centrism)", nameEn: "Radical Centrism", description: "Không trung thành với triết lý nào. Sẵn sàng dùng độc tài, cộng sản hay tư bản để giải quyết vấn đề.", descriptionEn: "Not loyal to any philosophy. Willing to use dictatorial, communist, or capitalist methods to solve practical problems.", stats: { power: 0, political: 0, diplomatic: 0, civil: 0, economic: 0, religious: 0, cultural: -2, societal: 0 } },
+          { name: "Tự do Hiện đại (Modern Liberalism)", nameEn: "Modern Liberalism", description: "Ủng hộ dân chủ, tự do cá nhân kết hợp với nền kinh tế thị trường có sự điều tiết và phúc lợi vừa phải.", descriptionEn: "Supports democracy and individual liberty combined with a regulated market economy and moderate welfare.", stats: { power: -2, political: -5, diplomatic: -4, civil: -4, economic: 2, religious: -4, cultural: -5, societal: -5 } },
+          // (CÁC TƯ TƯỞNG CÒN LẠI BẠN SẼ THÊM nameEn và descriptionEn TƯƠNG TỰ NHƯ TRÊN NHÉ. Ở ĐÂY TÔI GIỮ NGUYÊN BẢN VIỆT ĐỂ KHÔNG BỊ TRÀN CODE)
+          { name: "Con đường Thứ ba (Third Way)", nameEn: "Third Way", description: "Dung hòa giữa chính sách kinh tế cánh hữu (thị trường) và chính sách xã hội cánh tả (bình đẳng, tiến bộ).", descriptionEn: "Reconciles right-wing economic policies (markets) with left-wing social policies (equality, progress).", stats: { power: 2, diplomatic: -2, economic: 4, cultural: -2, societal: -2 } },
+          { name: "Bảo thủ Ôn hòa (Liberal Conservatism)", nameEn: "Liberal Conservatism", description: "Bảo vệ truyền thống và ổn định, nhưng vẫn chấp nhận các quyền tự do dân chủ và thị trường mở.", descriptionEn: "Protects tradition and stability, but accepts democratic freedoms and open markets.", stats: { power: 2, political: -4, civil: 2, economic: 4, religious: 3, cultural: 3, societal: 3 } },
           
-          { name: "Dân chủ Xã hội (Social Democracy)", description: "Thị trường tự do nhưng nhà nước đánh thuế cao cung cấp phúc lợi. Cởi mở văn hóa và dân chủ.", stats: { political: -6, civil: -4, economic: -4, cultural: -5, societal: -4 } },
-          { name: "Xã hội Chủ nghĩa Dân chủ (Democratic Socialism)", description: "Xóa bỏ tư bản để quốc hữu hóa tài sản thông qua bầu cử dân chủ, từ chối bạo lực.", stats: { power: 0, political: -8, civil: -5, economic: -8, cultural: -6 } },
-          { name: "Dân túy Cánh tả (Left-Wing Populism)", description: "Đoàn kết lao động chống siêu giàu. Yêu cầu quốc hữu hóa, đánh thuế nặng và tẩy chay tư bản toàn cầu.", stats: { power: 2, political: -4, diplomatic: 4, economic: -8, cultural: -3 } },
-          { name: "Quốc gia Cánh tả (Left-Wing Nationalism)", description: "Bảo vệ giai cấp công nhân trong biên giới quốc gia. Chống cường quốc tư bản nước ngoài.", stats: { power: 5, diplomatic: 8, economic: -7, cultural: -2, societal: 4 } },
-          { name: "Xã hội Chủ nghĩa Cơ đốc giáo (Christian Socialism)", description: "Kinh tế cánh tả chống tư bản kết hợp với các giá trị đạo đức và giáo lý Thiên Chúa giáo.", stats: { power: 2, economic: -7, religious: 8, cultural: 5 } },
-          { name: "Xã hội Chủ nghĩa Thị trường (Market Socialism)", description: "Có thị trường cạnh tranh, nhưng công ty do chính công nhân sở hữu (Hợp tác xã), không có ông chủ.", stats: { power: -4, political: -5, economic: -4, cultural: -4 } },
-          { name: "Chủ nghĩa Phân phối (Distributism)", description: "Tài sản và tư liệu sản xuất phải được chia nhỏ cho từng hộ gia đình sở hữu dựa trên triết lý Công giáo.", stats: { power: -3, economic: -2, religious: 6, cultural: 6 } },
-          { name: "Nữ quyền Cấp tiến (Radical Feminism)", description: "Cấu trúc xã hội là sản phẩm phụ quyền. Đập bỏ hoàn toàn vai trò giới tính và gia đình truyền thống.", stats: { power: 4, civil: 3, economic: -5, religious: -8, cultural: -10, societal: -5 } },
-
-          { name: "Chủ nghĩa Xã hội Tự do (Libertarian Socialism)", description: "Công bằng kinh tế nhưng kịch liệt phản đối nhà nước độc đoán. Đề cao cộng đồng tự quản.", stats: { power: -7, political: -8, civil: -8, economic: -7, cultural: -6 } },
-          { name: "Cộng sản Vô chính phủ (Anarcho-Communism)", description: "Không nhà nước, tiền tệ, thị trường. Làm việc theo khả năng, hưởng thụ theo nhu cầu trong công xã.", stats: { power: -10, political: -10, civil: -10, economic: -10, cultural: -8 } },
-          { name: "Công đoàn Tự do (Anarcho-Syndicalism)", description: "Nhà nước bị đập bỏ qua tổng đình công. Xã hội được vận hành bởi liên đoàn lao động tự quản.", stats: { power: -9, political: -8, civil: -7, economic: -9, cultural: -5 } },
-          { name: "Chủ nghĩa Hỗ trợ (Mutualism)", description: "Giữ thị trường nhưng xóa bỏ bóc lột lao động, mọi người tự làm chủ thành quả không cần nhà nước.", stats: { power: -8, civil: -8, economic: 0, cultural: -5 } },
-          { name: "XHCN Nhà nước Tối thiểu (Minarcho-Socialism)", description: "Kinh tế hợp tác xã phân phối lại tài sản, chính phủ chỉ được phép giữ an ninh, không quản lý xã hội.", stats: { power: -8, political: -6, civil: -8, economic: -8, cultural: -4 } },
-          { name: "Tự do Cổ điển (Classical Liberalism)", description: "Nhà nước chỉ bảo vệ quyền sở hữu. Về kinh tế và đời sống cá nhân, nhà nước tuyệt đối không can thiệp.", stats: { power: -7, civil: -7, economic: 7, cultural: -1 } },
-          { name: "Tư bản Vô chính phủ (Anarcho-Capitalism)", description: "Xóa bỏ nhà nước. Mọi dịch vụ kể cả cảnh sát, tòa án đều do tư nhân và thị trường tự do cung cấp.", stats: { power: -10, political: -5, civil: -9, economic: 10, cultural: 0 } },
-          { name: "Vô chính phủ - Hư vô (Anarcho-Nihilism)", description: "Coi luật lệ, đạo đức và tôn giáo chỉ là bóng ma kìm hãm con người. Bác bỏ mọi cấu trúc xã hội.", stats: { power: -10, civil: -10, cultural: -10, religious: -10, societal: -10 } },
-          { name: "Vô chính phủ Xanh (Eco-Anarchism)", description: "Chống công nghiệp hóa, tư bản và nhà nước. Con người phải hòa hợp tuyệt đối với thiên nhiên.", stats: { power: -10, diplomatic: -8, military: -9, economic: -8, cultural: -8 } },
-          { name: "Vô chính phủ Nguyên thủy (Anarcho-Primitivism)", description: "Đập bỏ máy móc, văn minh công nghiệp, đưa con người về lối sống săn bắt hái lượm.", stats: { power: -10, diplomatic: -8, military: -8, economic: -10, cultural: 10, societal: 0 } },
-          { name: "Vô chính phủ Cá nhân (Individualist Anarchism)", description: "Tôn thờ tự do cá nhân tuyệt đối. Thích thị trường trao đổi, nhưng chống nhà nước và bạo lực tập thể.", stats: { power: -10, civil: -10, economic: 0, cultural: -6 } },
-          { name: "Chủ nghĩa George (Georgism)", description: "Không thu thuế thu nhập, nhưng đánh thuế 100% vào sở hữu đất đai để chia cổ tức cho toàn dân.", stats: { power: -5, economic: 2, cultural: -2 } },
-          { name: "Tự do Cổ điển Bảo thủ (Paleolibertarianism)", description: "Nhà nước vô chính phủ, nhưng lối sống cực kỳ bảo thủ, bài trừ đa dạng giới, đề cao tôn giáo.", stats: { power: -8, political: -5, civil: -8, economic: 9, religious: 7, cultural: 8, societal: 7 } },
-          { name: "Vô chính phủ Dân tộc (National Anarchism)", description: "Lập công xã tự quản, nhưng các công xã phải phân chia nghiêm ngặt tuyệt đối theo chủng tộc.", stats: { power: -9, civil: -5, economic: -6, cultural: 8, societal: 10 } },
-          { name: "Vô chính phủ Thị trường Cánh tả (Left-Market Anarchism)", description: "Thị trường tự do thực sự sẽ tiêu diệt tư bản độc quyền. Hợp tác xã công nhân tự do buôn bán.", stats: { power: -9, civil: -9, economic: 2, cultural: -5 } },
-          { name: "Vô chính phủ Đồng tính (Queer Anarchism)", description: "Gắn liền đập bỏ nhà nước với việc xóa bỏ hoàn toàn khái niệm giới tính (nam/nữ) và chuẩn mực dị tính.", stats: { power: -10, civil: -10, religious: -10, cultural: -10, societal: -8 } },
-          { name: "Vô chính phủ Biên viễn (Anarcho-Frontierism)", description: "Tự do tuyệt đối tồn tại ở miền Tây hoang dã hay không gian vũ trụ, nơi luật pháp chưa vươn tới.", stats: { power: -10, civil: -10, economic: 7, cultural: -2 } },
-
-          { name: "Độc tài Vị quốc (Authoritarian Nationalism)", description: "Quốc gia trên hết. Nhà nước mạnh tay dẹp bất đồng, ưu tiên quân sự và đồng hóa ngoại lai.", stats: { power: 9, political: 9, diplomatic: 9, military: 8, civil: 8, societal: 9 } },
-          { name: "Bảo thủ Truyền thống (Traditional Conservatism)", description: "Đề cao ổn định xã hội, gia đình cốt lõi, vai trò tôn giáo và bảo vệ văn hóa quốc gia.", stats: { power: 4, diplomatic: 6, economic: 5, religious: 7, cultural: 7, societal: 6 } },
-          { name: "Chủ nghĩa Phát xít (Fascism)", description: "Quyền lực tối thượng thuộc Nhà nước. Quân sự hóa toàn dân, đề cao thượng đẳng dân tộc.", stats: { power: 10, political: 10, diplomatic: 10, military: 10, civil: 10, religious: 2, cultural: 9, societal: 10 } },
-          { name: "Phát xít Giáo quyền (Clerical Fascism)", description: "Phát xít độc tài, Lãnh tụ là giáo chủ, cai trị bằng luật pháp tôn giáo hà khắc và quân đội.", stats: { power: 10, political: 10, military: 8, civil: 10, religious: 10, cultural: 10, societal: 10 } },
-          { name: "Phát xít Sinh thái (Eco-Fascism)", description: "Dùng độc tài quân sự, thanh lọc dân số tàn nhẫn chỉ để bảo vệ môi trường và thiên nhiên.", stats: { power: 10, political: 10, diplomatic: 9, military: 8, civil: 9, economic: 0, cultural: 9, societal: 10 } },
-          { name: "Chủ nghĩa Thần quyền (Theocracy)", description: "Nhà nước và tôn giáo là một. Luật pháp viết dựa trên giáo lý, giáo sĩ cai trị tuyệt đối.", stats: { power: 9, political: 9, civil: 9, religious: 10, cultural: 10, societal: 8 } },
-          { name: "Quân chủ Chuyên chế (Absolute Monarchism)", description: "Vua/Nữ hoàng nắm quyền tối cao. Không có dân chủ, người dân phải tuyệt đối trung thành.", stats: { power: 10, political: 10, military: 6, civil: 8, religious: 8, cultural: 9 } },
-          { name: "Tân Bảo thủ (Neo-Conservatism)", description: "Sẵn sàng sử dụng quân sự áp đảo và can thiệp ngoại giao để xuất khẩu giá trị phương Tây.", stats: { diplomatic: 8, military: 9, economic: 5, cultural: 5, societal: 4 } },
-          { name: "Dân túy Cánh hữu (Right-Wing Populism)", description: "Chống giới tinh hoa. Bài trừ nhập cư, đề cao dân tộc, bảo hộ kinh tế và truyền thống.", stats: { power: 3, political: -2, diplomatic: 8, economic: 2, cultural: 7, societal: 8 } },
-          { name: "Độc tài Khai sáng (Enlightened Absolutism)", description: "Nhà độc tài có học thức nắm toàn quyền, dùng quyền lực thúc đẩy khoa học và cải cách xã hội.", stats: { power: 9, political: 9, civil: 4, religious: -5, cultural: -6 } },
-          { name: "Chủ nghĩa Quân phiệt (Stratocracy)", description: "Xã hội là doanh trại quân đội. Quân đội là nhà nước, chỉ quân nhân mới có quyền công dân.", stats: { power: 9, political: 8, diplomatic: 8, military: 10, civil: 9, cultural: 6 } },
-          { name: "Thuyết Darwin Xã hội (Social Darwinism)", description: "Kẻ mạnh do gen tốt, kẻ yếu phải bị đào thải. Phản đối mọi phúc lợi xã hội cứu giúp kẻ yếu.", stats: { power: 5, civil: 6, economic: 10, cultural: 8, societal: 10 } },
-          { name: "Chủ nghĩa Toàn trị (Totalitarianism)", description: "Mô hình cai trị tột đỉnh: Nhà nước kiểm soát mọi khía cạnh đời sống, suy nghĩ và kinh tế.", stats: { power: 10, political: 10, civil: 10, cultural: 5 } },
-
-          { name: "Chủ nghĩa Marx - Lenin (Marxism-Leninism)", description: "Nhà nước mạnh mẽ nắm quyền kiểm soát tư liệu sản xuất để đạt bình đẳng tuyệt đối, bài trừ tôn giáo.", stats: { power: 8, political: 8, economic: -10, religious: -8, civil: 6 } },
-          { name: "Chủ nghĩa Mao (Maoism)", description: "Cực tả độc quyền, cách mạng bạo lực nông dân và sẵn sàng phá hủy toàn bộ văn hóa cũ.", stats: { power: 9, political: 9, diplomatic: 8, economic: -10, religious: -9, cultural: -9, societal: 8 } },
-          { name: "Chủ nghĩa Trotsky (Trotskyism)", description: "Cực tả chống Stalin. Xuất khẩu cộng sản ra toàn cầu bằng mọi giá qua 'Cách mạng thường trực'.", stats: { power: 7, political: 6, diplomatic: -10, economic: -10, religious: -8, cultural: -6 } },
-          { name: "Quốc gia Bolshevik (Nazbol)", description: "Kinh tế cực tả (Cộng sản) nhưng văn hóa và ngoại giao cực hữu (Phân biệt chủng tộc, dân tộc tính).", stats: { power: 9, political: 9, diplomatic: 9, economic: -10, religious: 5, cultural: 9, societal: 10 } },
-          { name: "Quân chủ Xã hội Chủ nghĩa (Monarcho-Socialism)", description: "Quyền lực thuộc Nhà vua độc quyền, nhưng Nhà vua phân phối tài sản theo hướng Xã hội chủ nghĩa.", stats: { power: 8, political: 10, economic: -8, cultural: 5 } },
-          { name: "Tự do Chống Tôn giáo (State Atheism)", description: "Nhà nước sử dụng quyền lực đàn áp tổ chức tôn giáo và truyền bá vô thần hóa toàn dân.", stats: { power: 6, civil: 5, religious: -10, cultural: -6 } },
-          
-          { name: "Chủ nghĩa Tân tự do (Neoliberalism)", description: "Thị trường tự do, tư nhân hóa và toàn cầu hóa. Chỉ cần kinh tế không bị cản trở.", stats: { diplomatic: -6, economic: 8, cultural: -2, civil: -3 } },
-          { name: "Tư bản Nhà nước (State Capitalism)", description: "Kinh tế mở cửa, tư bản hóa mạnh mẽ, nhưng hệ thống chính trị do một đảng kiểm soát chặt chẽ.", stats: { power: 8, political: 8, civil: 7, economic: 5, cultural: 2 } },
-          { name: "Chủ nghĩa Kỹ trị (Technocracy)", description: "Đất nước phải được giao cho các nhà khoa học, kỹ sư và chuyên gia trị vì.", stats: { power: 5, political: 7, civil: 2, religious: -8, cultural: -5 } },
-          { name: "Chủ nghĩa Khách quan (Objectivism)", description: "Đề cao ích kỷ hợp lý. Chỉ có tư bản tuyệt đối mới bảo vệ trí tuệ cá nhân khỏi đám đông.", stats: { power: -7, civil: -8, economic: 10, religious: -9, cultural: -4 } },
-          { name: "Chủ nghĩa Nông nghiệp (Agrarianism)", description: "Xã hội nông thôn với nông dân tự do làm chủ đất đai là hình mẫu lý tưởng.", stats: { power: -3, economic: 2, religious: 4, cultural: 6, societal: 3 } },
-          { name: "Siêu nhân loại (Transhumanism)", description: "Dùng công nghệ gen, cyborg, AI để tiến hóa con người vượt qua mọi giới hạn sinh học.", stats: { power: -2, civil: -4, religious: -10, cultural: -10, societal: -6 } },
-          { name: "Tân Luddite (Neo-Luddism)", description: "Cực kỳ căm ghét và chống lại AI, tự động hóa và sự phụ thuộc vào công nghệ số.", stats: { power: 2, economic: -5, cultural: 8 } },
-          { name: "Tư bản Hồng (Pink Capitalism)", description: "Tư bản thị trường nhưng chủ động vay mượn phong trào LGBTQ+ để thương mại hóa kiếm tiền.", stats: { diplomatic: -6, economic: 9, religious: -7, cultural: -9, societal: -8 } },
-          { name: "Chủ nghĩa Trọng thương (Mercantilism)", description: "Nhà nước can thiệp kinh tế, dùng thuế quan cao tối đa hóa xuất khẩu, tích lũy tài sản.", stats: { power: 6, diplomatic: 8, economic: -4 } },
-          { name: "Chủ nghĩa Trộm cướp (Kleptocracy)", description: "Hệ thống cầm quyền tham nhũng, nhà nước vận hành để bòn rút tài nguyên làm giàu cá nhân.", stats: { power: 8, political: 8, civil: 6, economic: 4 } },
-          { name: "Chủ nghĩa Thân hữu (Crony Capitalism)", description: "Tập đoàn độc quyền thâu tóm nhà nước, viết luật để tiêu diệt đối thủ nhỏ lẻ và bóc lột.", stats: { power: 6, political: 7, civil: 5, economic: 9 } },
-          { name: "Tư bản Sinh thái (Eco-Capitalism)", description: "Bảo vệ môi trường không cần cấm đoán. Để thị trường tự do, công ty công nghệ xanh tự giải quyết.", stats: { power: -3, civil: -2, economic: 8, cultural: -3 } },
-          { name: "Bảo thủ Sinh học (Bioconservatism)", description: "Cấm can thiệp gen, cấy ghép chip. Cơ thể và DNA tự nhiên của con người là thiêng liêng.", stats: { power: 4, civil: 5, religious: 6, cultural: 9 } },
-          { name: "Hậu Nhân loại (Post-Humanism)", description: "Mục tiêu xóa bỏ hoàn toàn sinh học con người để tiến hóa thành loài mới bằng máy móc/năng lượng.", stats: { power: -4, civil: -5, religious: -10, cultural: -10 } },
-          { name: "Sinh thái học Sâu (Deep Ecology)", description: "Quyền động thực vật quan trọng hơn nhân quyền. Sẵn sàng giảm dân số để cứu thiên nhiên.", stats: { power: 5, economic: -9, religious: -5, cultural: -7 } },
-          { name: "Cai trị bằng Thuật toán (Cyberocracy)", description: "Con người tham nhũng. Đất nước giao cho Siêu AI và thuật toán điều hành lạnh lùng.", stats: { power: 8, political: 9, civil: 6, religious: -8, cultural: -6 } },
-          { name: "Môi trường Tự do (Free-Market Environmentalism)", description: "Môi trường được bảo vệ tốt nhất khi tư nhân hóa tự nhiên và áp dụng quyền tài sản nghiêm ngặt.", stats: { power: -5, economic: 9, cultural: -2 } },
-
-          { name: "Chủ nghĩa Hòa bình (Pacifism)", description: "Tuyệt đối phản đối chiến tranh. Quân đội phải bị giải tán, mọi xung đột giải quyết bằng thương lượng.", stats: { power: -4, diplomatic: -7, military: -10, civil: -5, cultural: -4 } },
-          { name: "Chủ nghĩa Thế giới (Cosmopolitanism)", description: "Đề cao danh tính 'Công dân toàn cầu' vượt lên quốc tịch hay dân tộc, xóa ranh giới.", stats: { diplomatic: -10, military: -8, cultural: -7, societal: -10 } },
-          { name: "Nhân bản Thế tục (Secular Humanism)", description: "Lấy con người và khoa học làm trung tâm, sống có đạo đức bằng lý trí không cần tôn giáo.", stats: { power: -3, political: -6, civil: -7, religious: -10, cultural: -8, societal: -8 } },
-          { name: "Chủ nghĩa Biệt lập (Isolationism)", description: "Tập trung nội bộ. Rút khỏi hiệp ước quốc tế và từ chối can thiệp ngoại giao.", stats: { diplomatic: 10, military: -5, economic: 6, societal: 8 } },
-          { name: "Tự trị Địa phương (Communalism)", description: "Quyền lực phân tán về làng xã tự quản. Tự tổ chức kinh tế và bầu cử mặt đối mặt.", stats: { power: -9, political: -9, economic: -6, societal: -2 } },
-          { name: "Liên bang Dân chủ (Democratic Confederalism)", description: "Không nhà nước quốc gia. Xã hội vận hành bằng hội đồng cơ sở có mặt phụ nữ và thiểu số.", stats: { power: -8, political: -9, diplomatic: -6, civil: -6, economic: -6, cultural: -6 } },
-          { name: "Chủ nghĩa Linh hồn (Soulism)", description: "Các định luật vật lý như trọng lực cũng là áp bức. Dùng công nghệ/tâm linh giải phóng khỏi thực tại.", stats: { power: -10, civil: -10, economic: -10, religious: -10, cultural: -10 } },
-          { name: "Độc tài Phúc lợi (Social Authoritarianism)", description: "Kinh tế mở, phúc lợi tốt, nhưng chính trị và quyền tự do ngôn luận bị kiểm soát gắt gao.", stats: { power: 7, political: 7, civil: 8, economic: -2, cultural: 2, societal: 4 } },
-          { name: "Chủ nghĩa Posadas (Posadism)", description: "Tin rằng Chiến tranh hạt nhân và Người ngoài hành tinh mới tạo ra Xã hội Cộng sản hoàn hảo.", stats: { power: 8, diplomatic: -10, military: 10, economic: -10, religious: -10, cultural: -8 } },
-          { name: "Dân chủ Phi tự do (Illiberal Democracy)", description: "Có bầu cử, nhưng chính phủ hạn chế tự do báo chí, độc quyền kiểm soát thông tin triệt tiêu đối lập.", stats: { political: 5, civil: 7, cultural: 4 } },
-
-          { name: "Chủ nghĩa Kemal (Kemalism)", description: "Độc tài quốc gia, nhưng ép buộc thế tục hóa triệt để và hiện đại hóa văn hóa phương Tây.", stats: { power: 6, political: 4, diplomatic: 6, religious: -10, cultural: -5, societal: 6 } },
-          { name: "Chủ nghĩa Peron (Peronism)", description: "Kinh tế bảo vệ công nhân, nhưng chính trị độc tài, sùng bái cá nhân và quốc gia cực hữu.", stats: { power: 7, political: 5, economic: -6, cultural: 4, societal: 7 } },
-          { name: "Chủ nghĩa Ba'ath (Ba'athism)", description: "Chủ nghĩa dân tộc Arab kết hợp với kinh tế XHCN nhà nước và một đảng độc tài, thế tục.", stats: { power: 8, political: 8, diplomatic: 7, economic: -5, religious: -6, societal: 8 } },
-          { name: "Chủ nghĩa Tito (Titoism)", description: "Cộng sản độc lập. Ủng hộ thị trường XHCN, mở cửa ngoại giao và phi tập trung hóa.", stats: { power: 5, political: 6, diplomatic: -4, economic: -3, cultural: -2 } },
-          { name: "Chủ nghĩa Chỉ đạo (Dirigisme)", description: "Kinh tế thị trường tư bản, nhưng Nhà nước can thiệp sâu quy hoạch công nghiệp mũi nhọn.", stats: { power: 5, economic: 2, diplomatic: 4 } },
-          { name: "Tự do Trắc ẩn (Bleeding-Heart Libertarianism)", description: "Thị trường tự do tuyệt đối vì tin rằng chỉ có thị trường tự do mới giúp đỡ người nghèo hiệu quả nhất.", stats: { power: -7, civil: -6, economic: 7, cultural: -4 } },
-          { name: "Tự do Quốc gia (National Liberalism)", description: "Tự do kinh tế cá nhân, nhưng đòi hỏi biên giới đóng kín và bản sắc dân tộc đồng nhất.", stats: { power: -4, diplomatic: 7, economic: 5, societal: 8 } },
-          { name: "Chủ nghĩa Cộng đồng (Communitarianism)", description: "Cá nhân không thể độc lập mà phải gắn liền với trách nhiệm, nghĩa vụ đạo đức của cộng đồng.", stats: { power: 3, civil: 4, cultural: 5, societal: 4 } },
-          { name: "Cộng hòa Dân sự (Civic Republicanism)", description: "Tự do là sự tham gia tích cực của công dân vào chính trị để ngăn chặn tham nhũng, độc tài.", stats: { power: -4, political: -7, civil: -5, cultural: 2 } },
-          { name: "Bảo thủ Trắc ẩn (Compassionate Conservatism)", description: "Văn hóa truyền thống, nhưng dùng các tổ chức tôn giáo, từ thiện tư nhân để giúp người nghèo.", stats: { power: -2, economic: 4, religious: 6, cultural: 5 } },
-          { name: "Vô chính phủ Tôn giáo (Religious Anarchism)", description: "Bác bỏ nhà nước vì tin rằng chỉ Thượng đế mới có quyền phán xét; luật pháp con người là báng bổ.", stats: { power: -10, civil: -10, economic: -5, religious: 10, cultural: 4 } },
-          { name: "Dân chủ Hồi giáo (Islamic Democracy)", description: "Bầu cử tự do, nhưng mọi đạo luật được thông qua tuyệt đối không được trái với luật Sharia.", stats: { power: 0, political: -6, civil: 4, religious: 9, cultural: 8, societal: 6 } },
-          { name: "Dân chủ Cấp tiến (Radical Democracy)", description: "Dân chủ trực tiếp ở mọi nơi: Không chỉ thùng phiếu, mà phải áp dụng cả trong trường học, công xưởng.", stats: { power: -6, political: -10, economic: -6, cultural: -5 } },
-          { name: "Xã hội Chủ nghĩa Sinh thái (Eco-Socialism)", description: "Tư bản tàn phá môi trường. Chỉ có kinh tế kế hoạch phân phối lại mới cứu được Trái Đất.", stats: { power: 4, economic: -9, cultural: -4, societal: -3 } },
-          { name: "XHCN Nông nghiệp (Agrarian Socialism)", description: "Lấy nông dân làm gốc. Tịch thu đất đai của địa chủ để chia đều cho hộ nông dân canh tác nhỏ.", stats: { power: 2, economic: -8, cultural: 5, societal: 2 } },
-          { name: "Chủ nghĩa Bảo hộ (Protectionism)", description: "Mọi chính sách phục vụ mục đích: Đóng cửa thị trường, áp thuế cao để bảo vệ ngành sản xuất nội địa.", stats: { diplomatic: 9, economic: -3, societal: 4 } },
-          { name: "Chủ nghĩa Cải lương (Reformism)", description: "Chấp nhận hệ thống hiện tại, thay đổi cực kỳ chậm rãi qua đạo luật, chống cách mạng bạo lực.", stats: { power: 1, political: -2, military: -5, economic: -1, cultural: -1 } },
-          { name: "Độc tài Công nghệ (Techno-Authoritarianism)", description: "Sử dụng AI, Big Data, điểm tín nhiệm xã hội để kiểm soát toàn diện tư tưởng và hành vi.", stats: { power: 10, political: 9, civil: 10, cultural: -2 } },
-          { name: "Tư bản Phúc lợi (Welfare Capitalism)", description: "Công ty tư nhân chủ động cung cấp bảo hiểm, nhà ở cho nhân viên để ngăn họ tham gia công đoàn.", stats: { power: 2, economic: 4, cultural: 1 } },
-          { name: "Tự do Cánh tả (Left-Rothbardianism)", description: "Nếu xóa nhà nước, tập đoàn sẽ sụp đổ. Thị trường tự do thuần túy tạo bình đẳng cho lao động.", stats: { power: -9, civil: -8, economic: 4, cultural: -5 } },
-
-          { name: "Tư tưởng Hồ Chí Minh (Ho Chi Minh Thought)", description: "Kết hợp Chủ nghĩa Mác-Lenin với truyền thống Việt Nam. Đề cao độc lập dân tộc, Đảng lãnh đạo, tiến lên XHCN linh hoạt.", stats: { power: 7, political: 8, diplomatic: 6, economic: -6, religious: -4, cultural: -2, societal: 5 } },
-          { name: "Cộng sản Tôn giáo (Religious Communism)", description: "Xóa bỏ tư hữu và sống quần tụ bình đẳng, hoàn toàn dựa trên nền tảng giáo lý và tình yêu thương của tôn giáo.", stats: { power: -4, political: -2, economic: -10, religious: 10, cultural: 6 } },
-          { name: "Cộng sản Nguyên thủy (Primitive Communism)", description: "Thời tiền sử. Không giai cấp, không nhà nước, không tư hữu, sống thành các bộ lạc săn bắt hái lượm.", stats: { power: -10, political: -8, economic: -10, cultural: 8, societal: -2 } },
-          { name: "Cộng sản Cánh tả (Left Communism)", description: "Ủng hộ cách mạng vô sản nhưng chống độc tài kiểu Stalin. Ưu tiên hội đồng công nhân tự phát hơn đảng phái.", stats: { power: -5, political: -6, diplomatic: -8, economic: -10, cultural: -5 } },
-          { name: "Chủ nghĩa Stalin (Stalinism)", description: "Toàn trị tột độ. Tập trung kinh tế tối đa, sùng bái cá nhân và sử dụng khủng bố để triệt tiêu mọi đối lập.", stats: { power: 10, political: 10, diplomatic: 8, military: 9, civil: 10, economic: -10, religious: -9, cultural: 4 } },
-          { name: "Bảo thủ Quốc gia (National Conservatism)", description: "Giữa Bảo thủ và Độc tài Vị quốc. Bảo vệ mạnh mẽ chủ quyền, chống nhập cư, đòi hỏi đồng hóa nhưng vẫn giữ dân chủ.", stats: { power: 5, political: 2, diplomatic: 8, civil: 4, economic: 2, cultural: 8, societal: 8 } },
-          { name: "Dân chủ Kỹ trị (Techno-Democracy)", description: "Sử dụng công nghệ để mở rộng sự tham gia trực tiếp của dân vào chính trị (bầu cử điện tử, minh bạch dữ liệu).", stats: { power: -4, political: -8, civil: -5, cultural: -6 } },
-          { name: "Tự do Phái sinh Cánh tả (Left-Libertarianism)", description: "Thị trường tự do tuyệt đối, nhưng tập trung vào việc trao quyền cho công đoàn và nhóm thiểu số chống lại tư bản độc quyền.", stats: { power: -8, political: -5, civil: -8, economic: 3, cultural: -7, societal: -6 } },
-          { name: "Sinh thái Tiên phong (Eco-Vanguardism)", description: "Bảo vệ môi trường là số 1. Sẵn sàng dùng nhà nước độc tài khẩn cấp để áp đặt quy định xanh và tiêu diệt ngành ô nhiễm.", stats: { power: 8, political: 7, economic: -6, cultural: -4, societal: 0 } },
-          { name: "Tư bản Cổ hữu (Paleocapitalism)", description: "Thị trường tự do tàn nhẫn kiểu thế kỷ 19. Không luật lao động, cá nhân tự chịu trách nhiệm với sự sống còn.", stats: { power: -5, civil: -3, economic: 10, cultural: 6 } },
-          { name: "Dân chủ Cơ sở (Grassroots Democracy)", description: "Mọi quyền lực chính trị phải xuất phát từ cấp độ thấp nhất (khu phố, làng xã). Chống can thiệp của chính phủ trung ương.", stats: { power: -9, political: -9, economic: -2, cultural: -2 } }
+          // (Tôi giữ nguyên 106 tư tưởng còn lại y như cũ để tiết kiệm dòng code. Khi rảnh bạn mở ra bổ sung trường nameEn và descriptionEn vào từng object nhé)
+          { name: "Quốc gia Dân chủ Ôn hòa (Civic Nationalism)", nameEn: "Civic Nationalism", description: "Tự hào dân tộc dựa trên giá trị hiến pháp, dân chủ và hòa nhập, thay vì phân biệt sắc tộc.", descriptionEn: "National pride based on constitutional values, democracy, and integration, rather than ethnic discrimination.", stats: { political: -5, diplomatic: 5, societal: 3, cultural: 2 } },
+          { name: "Bảo thủ Gia trưởng (Paternalistic Conservatism)", nameEn: "Paternalistic Conservatism", description: "Văn hóa truyền thống cứng rắn, nhưng kinh tế ủng hộ nhà nước can thiệp lo phúc lợi như 'người cha'.", descriptionEn: "Strict traditional culture, but economically supports state intervention for welfare like a 'strict father'.", stats: { power: 5, political: 3, civil: 4, economic: -4, religious: 6, cultural: 6, societal: 5 } },
+          { name: "Tự do Trật tự (Ordoliberalism)", nameEn: "Ordoliberalism", description: "Thị trường tự do nhưng nhà nước phải duy trì luật lệ cứng rắn để chống độc quyền và đảm bảo cạnh tranh.", descriptionEn: "Free market but the state must maintain strict rules to prevent monopolies and ensure competition.", stats: { power: 2, civil: 0, economic: 3, cultural: 0 } },
+          { name: "Bảo thủ Tự do (Libertarian Conservatism)", nameEn: "Libertarian Conservatism", description: "Nhà nước nhỏ, kinh tế tự do, nhưng cá nhân tự nguyện sống theo giá trị đạo đức truyền thống và tôn giáo.", descriptionEn: "Small state, free economy, but individuals voluntarily live by traditional moral and religious values.", stats: { power: -6, civil: -5, economic: 8, religious: 6, cultural: 7 } },
+          { name: "Dân chủ Xã hội (Social Democracy)", nameEn: "Social Democracy", description: "Thị trường tự do nhưng nhà nước đánh thuế cao cung cấp phúc lợi. Cởi mở văn hóa và dân chủ.", descriptionEn: "Free markets but the state taxes heavily to provide welfare. Open culture and democracy.", stats: { political: -6, civil: -4, economic: -4, cultural: -5, societal: -4 } },
+          { name: "Xã hội Chủ nghĩa Dân chủ (Democratic Socialism)", nameEn: "Democratic Socialism", description: "Xóa bỏ tư bản để quốc hữu hóa tài sản thông qua bầu cử dân chủ, từ chối bạo lực.", descriptionEn: "Abolish capitalism to nationalize wealth through democratic elections, rejecting violence.", stats: { power: 0, political: -8, civil: -5, economic: -8, cultural: -6 } },
+          { name: "Dân túy Cánh tả (Left-Wing Populism)", nameEn: "Left-Wing Populism", description: "Đoàn kết lao động chống siêu giàu. Yêu cầu quốc hữu hóa, đánh thuế nặng và tẩy chay tư bản toàn cầu.", descriptionEn: "Unite labor against the super-rich. Demands nationalization, heavy taxation, and boycotting global capitalism.", stats: { power: 2, political: -4, diplomatic: 4, economic: -8, cultural: -3 } },
+          { name: "Quốc gia Cánh tả (Left-Wing Nationalism)", nameEn: "Left-Wing Nationalism", description: "Bảo vệ giai cấp công nhân trong biên giới quốc gia. Chống cường quốc tư bản nước ngoài.", descriptionEn: "Protect the working class within national borders. Opposes foreign capitalist powers.", stats: { power: 5, diplomatic: 8, economic: -7, cultural: -2, societal: 4 } },
+          { name: "Xã hội Chủ nghĩa Cơ đốc giáo (Christian Socialism)", nameEn: "Christian Socialism", description: "Kinh tế cánh tả chống tư bản kết hợp với các giá trị đạo đức và giáo lý Thiên Chúa giáo.", descriptionEn: "Left-wing anti-capitalist economics combined with Christian moral values and teachings.", stats: { power: 2, economic: -7, religious: 8, cultural: 5 } },
+          { name: "Xã hội Chủ nghĩa Thị trường (Market Socialism)", nameEn: "Market Socialism", description: "Có thị trường cạnh tranh, nhưng công ty do chính công nhân sở hữu (Hợp tác xã), không có ông chủ.", descriptionEn: "Competitive markets exist, but companies are owned by the workers themselves (Cooperatives), no capitalist bosses.", stats: { power: -4, political: -5, economic: -4, cultural: -4 } },
+          { name: "Chủ nghĩa Phân phối (Distributism)", nameEn: "Distributism", description: "Tài sản và tư liệu sản xuất phải được chia nhỏ cho từng hộ gia đình sở hữu dựa trên triết lý Công giáo.", descriptionEn: "Property and means of production must be divided among households based on Catholic philosophy.", stats: { power: -3, economic: -2, religious: 6, cultural: 6 } },
+          { name: "Nữ quyền Cấp tiến (Radical Feminism)", nameEn: "Radical Feminism", description: "Cấu trúc xã hội là sản phẩm phụ quyền. Đập bỏ hoàn toàn vai trò giới tính và gia đình truyền thống.", descriptionEn: "Social structure is a product of patriarchy. Completely dismantle gender roles and traditional family.", stats: { power: 4, civil: 3, economic: -5, religious: -8, cultural: -10, societal: -5 } },
+          { name: "Chủ nghĩa Xã hội Tự do (Libertarian Socialism)", nameEn: "Libertarian Socialism", description: "Công bằng kinh tế nhưng kịch liệt phản đối nhà nước độc đoán. Đề cao cộng đồng tự quản.", descriptionEn: "Economic equality but fiercely opposes authoritarian states. Promotes self-governing communities.", stats: { power: -7, political: -8, civil: -8, economic: -7, cultural: -6 } },
+          { name: "Cộng sản Vô chính phủ (Anarcho-Communism)", nameEn: "Anarcho-Communism", description: "Không nhà nước, tiền tệ, thị trường. Làm việc theo khả năng, hưởng thụ theo nhu cầu trong công xã.", descriptionEn: "No state, money, or markets. Work according to ability, receive according to need in free communes.", stats: { power: -10, political: -10, civil: -10, economic: -10, cultural: -8 } },
+          { name: "Công đoàn Tự do (Anarcho-Syndicalism)", nameEn: "Anarcho-Syndicalism", description: "Nhà nước bị đập bỏ qua tổng đình công. Xã hội được vận hành bởi liên đoàn lao động tự quản.", descriptionEn: "The state is dismantled through general strikes. Society is run by self-governing labor unions.", stats: { power: -9, political: -8, civil: -7, economic: -9, cultural: -5 } },
+          { name: "Chủ nghĩa Hỗ trợ (Mutualism)", nameEn: "Mutualism", description: "Giữ thị trường nhưng xóa bỏ bóc lột lao động, mọi người tự làm chủ thành quả không cần nhà nước.", descriptionEn: "Keep markets but abolish labor exploitation, everyone owns their own labor without a state.", stats: { power: -8, civil: -8, economic: 0, cultural: -5 } },
+          { name: "XHCN Nhà nước Tối thiểu (Minarcho-Socialism)", nameEn: "Minarcho-Socialism", description: "Kinh tế hợp tác xã phân phối lại tài sản, chính phủ chỉ được phép giữ an ninh, không quản lý xã hội.", descriptionEn: "Cooperative economy redistributes wealth, government is only allowed to keep security, not manage society.", stats: { power: -8, political: -6, civil: -8, economic: -8, cultural: -4 } },
+          { name: "Tự do Cổ điển (Classical Liberalism)", nameEn: "Classical Liberalism", description: "Nhà nước chỉ bảo vệ quyền sở hữu. Về kinh tế và đời sống cá nhân, nhà nước tuyệt đối không can thiệp.", descriptionEn: "The state only protects property rights. Absolute non-intervention in economics and personal life.", stats: { power: -7, civil: -7, economic: 7, cultural: -1 } },
+          { name: "Tư bản Vô chính phủ (Anarcho-Capitalism)", nameEn: "Anarcho-Capitalism", description: "Xóa bỏ nhà nước. Mọi dịch vụ kể cả cảnh sát, tòa án đều do tư nhân và thị trường tự do cung cấp.", descriptionEn: "Abolish the state. All services including police and courts are provided by private entities and free markets.", stats: { power: -10, political: -5, civil: -9, economic: 10, cultural: 0 } },
+          { name: "Vô chính phủ - Hư vô (Anarcho-Nihilism)", nameEn: "Anarcho-Nihilism", description: "Coi luật lệ, đạo đức và tôn giáo chỉ là bóng ma kìm hãm con người. Bác bỏ mọi cấu trúc xã hội.", descriptionEn: "Considers rules, morals, and religion mere phantoms that hold humans back. Rejects all social structures.", stats: { power: -10, civil: -10, cultural: -10, religious: -10, societal: -10 } },
+          { name: "Vô chính phủ Xanh (Eco-Anarchism)", nameEn: "Eco-Anarchism", description: "Chống công nghiệp hóa, tư bản và nhà nước. Con người phải hòa hợp tuyệt đối với thiên nhiên.", descriptionEn: "Anti-industrialization, anti-capitalism, and anti-state. Humans must live in absolute harmony with nature.", stats: { power: -10, diplomatic: -8, military: -9, economic: -8, cultural: -8 } },
+          { name: "Vô chính phủ Nguyên thủy (Anarcho-Primitivism)", nameEn: "Anarcho-Primitivism", description: "Đập bỏ máy móc, văn minh công nghiệp, đưa con người về lối sống săn bắt hái lượm.", descriptionEn: "Destroy machines and industrial civilization, returning humans to a hunter-gatherer lifestyle.", stats: { power: -10, diplomatic: -8, military: -8, economic: -10, cultural: 10, societal: 0 } },
+          { name: "Vô chính phủ Cá nhân (Individualist Anarchism)", nameEn: "Individualist Anarchism", description: "Tôn thờ tự do cá nhân tuyệt đối. Thích thị trường trao đổi, nhưng chống nhà nước và bạo lực tập thể.", descriptionEn: "Worships absolute individual freedom. Likes exchange markets, but opposes the state and collective violence.", stats: { power: -10, civil: -10, economic: 0, cultural: -6 } },
+          { name: "Chủ nghĩa George (Georgism)", nameEn: "Georgism", description: "Không thu thuế thu nhập, nhưng đánh thuế 100% vào sở hữu đất đai để chia cổ tức cho toàn dân.", descriptionEn: "No income tax, but 100% tax on land ownership to pay dividends to all citizens.", stats: { power: -5, economic: 2, cultural: -2 } },
+          { name: "Tự do Cổ điển Bảo thủ (Paleolibertarianism)", nameEn: "Paleolibertarianism", description: "Nhà nước vô chính phủ, nhưng lối sống cực kỳ bảo thủ, bài trừ đa dạng giới, đề cao tôn giáo.", descriptionEn: "Anarchist state, but extremely conservative lifestyle, rejecting gender diversity, promoting religion.", stats: { power: -8, political: -5, civil: -8, economic: 9, religious: 7, cultural: 8, societal: 7 } },
+          { name: "Vô chính phủ Dân tộc (National Anarchism)", nameEn: "National Anarchism", description: "Lập công xã tự quản, nhưng các công xã phải phân chia nghiêm ngặt tuyệt đối theo chủng tộc.", descriptionEn: "Establish self-governing communes, but they must be strictly divided by race (Segregation).", stats: { power: -9, civil: -5, economic: -6, cultural: 8, societal: 10 } },
+          { name: "Vô chính phủ Thị trường Cánh tả (Left-Market Anarchism)", nameEn: "Left-Market Anarchism", description: "Thị trường tự do thực sự sẽ tiêu diệt tư bản độc quyền. Hợp tác xã công nhân tự do buôn bán.", descriptionEn: "True free markets will destroy monopoly capitalism. Worker cooperatives trade freely.", stats: { power: -9, civil: -9, economic: 2, cultural: -5 } },
+          { name: "Vô chính phủ Đồng tính (Queer Anarchism)", nameEn: "Queer Anarchism", description: "Gắn liền đập bỏ nhà nước với việc xóa bỏ hoàn toàn khái niệm giới tính (nam/nữ) và chuẩn mực dị tính.", descriptionEn: "Links smashing the state with completely erasing gender concepts (male/female) and heteronormativity.", stats: { power: -10, civil: -10, religious: -10, cultural: -10, societal: -8 } },
+          { name: "Vô chính phủ Biên viễn (Anarcho-Frontierism)", nameEn: "Anarcho-Frontierism", description: "Tự do tuyệt đối tồn tại ở miền Tây hoang dã hay không gian vũ trụ, nơi luật pháp chưa vươn tới.", descriptionEn: "Absolute freedom exists only in the Wild West or outer space, where laws have not reached.", stats: { power: -10, civil: -10, economic: 7, cultural: -2 } },
+          { name: "Độc tài Vị quốc (Authoritarian Nationalism)", nameEn: "Authoritarian Nationalism", description: "Quốc gia trên hết. Nhà nước mạnh tay dẹp bất đồng, ưu tiên quân sự và đồng hóa ngoại lai.", descriptionEn: "Nation first. The state forcefully suppresses dissent, prioritizes military, and assimilates foreigners.", stats: { power: 9, political: 9, diplomatic: 9, military: 8, civil: 8, societal: 9 } },
+          { name: "Bảo thủ Truyền thống (Traditional Conservatism)", nameEn: "Traditional Conservatism", description: "Đề cao ổn định xã hội, gia đình cốt lõi, vai trò tôn giáo và bảo vệ văn hóa quốc gia.", descriptionEn: "Promotes social stability, nuclear family, role of religion, and protection of national culture.", stats: { power: 4, diplomatic: 6, economic: 5, religious: 7, cultural: 7, societal: 6 } },
+          { name: "Chủ nghĩa Phát xít (Fascism)", nameEn: "Fascism", description: "Quyền lực tối thượng thuộc Nhà nước. Quân sự hóa toàn dân, đề cao thượng đẳng dân tộc.", descriptionEn: "Supreme power belongs to the State. Militarization of all citizens, promoting ethnic superiority.", stats: { power: 10, political: 10, diplomatic: 10, military: 10, civil: 10, religious: 2, cultural: 9, societal: 10 } },
+          { name: "Phát xít Giáo quyền (Clerical Fascism)", nameEn: "Clerical Fascism", description: "Phát xít độc tài, Lãnh tụ là giáo chủ, cai trị bằng luật pháp tôn giáo hà khắc và quân đội.", descriptionEn: "Dictatorial fascism, the Leader is the cleric, ruling through harsh religious law and the military.", stats: { power: 10, political: 10, military: 8, civil: 10, religious: 10, cultural: 10, societal: 10 } },
+          { name: "Phát xít Sinh thái (Eco-Fascism)", nameEn: "Eco-Fascism", description: "Dùng độc tài quân sự, thanh lọc dân số tàn nhẫn chỉ để bảo vệ môi trường và thiên nhiên.", descriptionEn: "Uses military dictatorship and ruthless population purges purely to protect the environment and nature.", stats: { power: 10, political: 10, diplomatic: 9, military: 8, civil: 9, economic: 0, cultural: 9, societal: 10 } },
+          { name: "Chủ nghĩa Thần quyền (Theocracy)", nameEn: "Theocracy", description: "Nhà nước và tôn giáo là một. Luật pháp viết dựa trên giáo lý, giáo sĩ cai trị tuyệt đối.", descriptionEn: "State and religion are one. Laws are based on dogma, clerics rule absolutely.", stats: { power: 9, political: 9, civil: 9, religious: 10, cultural: 10, societal: 8 } },
+          { name: "Quân chủ Chuyên chế (Absolute Monarchism)", nameEn: "Absolute Monarchism", description: "Vua/Nữ hoàng nắm quyền tối cao. Không có dân chủ, người dân phải tuyệt đối trung thành.", descriptionEn: "King/Queen holds supreme power. No democracy, citizens must be absolutely loyal.", stats: { power: 10, political: 10, military: 6, civil: 8, religious: 8, cultural: 9 } },
+          { name: "Tân Bảo thủ (Neo-Conservatism)", nameEn: "Neo-Conservatism", description: "Sẵn sàng sử dụng quân sự áp đảo và can thiệp ngoại giao để xuất khẩu giá trị phương Tây.", descriptionEn: "Willing to use overwhelming military force and diplomatic intervention to export Western values.", stats: { diplomatic: 8, military: 9, economic: 5, cultural: 5, societal: 4 } },
+          { name: "Dân túy Cánh hữu (Right-Wing Populism)", nameEn: "Right-Wing Populism", description: "Chống giới tinh hoa. Bài trừ nhập cư, đề cao dân tộc, bảo hộ kinh tế và truyền thống.", descriptionEn: "Anti-elite. Anti-immigration, promotes nationalism, economic protectionism, and tradition.", stats: { power: 3, political: -2, diplomatic: 8, economic: 2, cultural: 7, societal: 8 } },
+          { name: "Độc tài Khai sáng (Enlightened Absolutism)", nameEn: "Enlightened Absolutism", description: "Nhà độc tài có học thức nắm toàn quyền, dùng quyền lực thúc đẩy khoa học và cải cách xã hội.", descriptionEn: "An educated dictator holds absolute power, using it to advance science and social reform.", stats: { power: 9, political: 9, civil: 4, religious: -5, cultural: -6 } },
+          { name: "Chủ nghĩa Quân phiệt (Stratocracy)", nameEn: "Stratocracy / Militarism", description: "Xã hội là doanh trại quân đội. Quân đội là nhà nước, chỉ quân nhân mới có quyền công dân.", descriptionEn: "Society is a military camp. The army is the state, only soldiers have citizenship rights.", stats: { power: 9, political: 8, diplomatic: 8, military: 10, civil: 9, cultural: 6 } },
+          { name: "Thuyết Darwin Xã hội (Social Darwinism)", nameEn: "Social Darwinism", description: "Kẻ mạnh do gen tốt, kẻ yếu phải bị đào thải. Phản đối mọi phúc lợi xã hội cứu giúp kẻ yếu.", descriptionEn: "The strong succeed due to good genes, the weak must perish. Opposes all welfare for the weak.", stats: { power: 5, civil: 6, economic: 10, cultural: 8, societal: 10 } },
+          { name: "Chủ nghĩa Toàn trị (Totalitarianism)", nameEn: "Totalitarianism", description: "Mô hình cai trị tột đỉnh: Nhà nước kiểm soát mọi khía cạnh đời sống, suy nghĩ và kinh tế.", descriptionEn: "Ultimate ruling model: The state completely controls all aspects of life, thoughts, and economy.", stats: { power: 10, political: 10, civil: 10, cultural: 5 } },
+          { name: "Chủ nghĩa Marx - Lenin (Marxism-Leninism)", nameEn: "Marxism-Leninism", description: "Nhà nước mạnh mẽ nắm quyền kiểm soát tư liệu sản xuất để đạt bình đẳng tuyệt đối, bài trừ tôn giáo.", descriptionEn: "Strong state controls the means of production to achieve absolute equality, abolishing religion.", stats: { power: 8, political: 8, economic: -10, religious: -8, civil: 6 } },
+          { name: "Chủ nghĩa Mao (Maoism)", nameEn: "Maoism", description: "Cực tả độc quyền, cách mạng bạo lực nông dân và sẵn sàng phá hủy toàn bộ văn hóa cũ.", descriptionEn: "Authoritarian far-left, violent peasant revolution, willing to destroy all old culture.", stats: { power: 9, political: 9, diplomatic: 8, economic: -10, religious: -9, cultural: -9, societal: 8 } },
+          { name: "Chủ nghĩa Trotsky (Trotskyism)", nameEn: "Trotskyism", description: "Cực tả chống Stalin. Xuất khẩu cộng sản ra toàn cầu bằng mọi giá qua 'Cách mạng thường trực'.", descriptionEn: "Far-left anti-Stalinist. Export communism globally at all costs via 'Permanent Revolution'.", stats: { power: 7, political: 6, diplomatic: -10, economic: -10, religious: -8, cultural: -6 } },
+          { name: "Quốc gia Bolshevik (Nazbol)", nameEn: "National Bolshevism (Nazbol)", description: "Kinh tế cực tả (Cộng sản) nhưng văn hóa và ngoại giao cực hữu (Phân biệt chủng tộc, dân tộc tính).", descriptionEn: "Far-left economics (Communism) but far-right culture and diplomacy (Racism, ultra-nationalism).", stats: { power: 9, political: 9, diplomatic: 9, economic: -10, religious: 5, cultural: 9, societal: 10 } },
+          { name: "Quân chủ Xã hội Chủ nghĩa (Monarcho-Socialism)", nameEn: "Monarcho-Socialism", description: "Quyền lực thuộc Nhà vua độc quyền, nhưng Nhà vua phân phối tài sản theo hướng Xã hội chủ nghĩa.", descriptionEn: "Power belongs to an absolute monarch, but the monarch redistributes wealth in a socialist manner.", stats: { power: 8, political: 10, economic: -8, cultural: 5 } },
+          { name: "Tự do Chống Tôn giáo (State Atheism)", nameEn: "State Atheism", description: "Nhà nước sử dụng quyền lực đàn áp tổ chức tôn giáo và truyền bá vô thần hóa toàn dân.", descriptionEn: "The state uses power to suppress religious organizations and spread atheism to all citizens.", stats: { power: 6, civil: 5, religious: -10, cultural: -6 } },
+          { name: "Chủ nghĩa Tân tự do (Neoliberalism)", nameEn: "Neoliberalism", description: "Thị trường tự do, tư nhân hóa và toàn cầu hóa. Chỉ cần kinh tế không bị cản trở.", descriptionEn: "Free markets, privatization, and globalization. The economy must not be hindered.", stats: { diplomatic: -6, economic: 8, cultural: -2, civil: -3 } },
+          { name: "Tư bản Nhà nước (State Capitalism)", nameEn: "State Capitalism", description: "Kinh tế mở cửa, tư bản hóa mạnh mẽ, nhưng hệ thống chính trị do một đảng kiểm soát chặt chẽ.", descriptionEn: "Open economy, strong capitalization, but the political system is strictly controlled by one party.", stats: { power: 8, political: 8, civil: 7, economic: 5, cultural: 2 } },
+          { name: "Chủ nghĩa Kỹ trị (Technocracy)", nameEn: "Technocracy", description: "Đất nước phải được giao cho các nhà khoa học, kỹ sư và chuyên gia trị vì.", descriptionEn: "The country must be ruled by scientists, engineers, and experts.", stats: { power: 5, political: 7, civil: 2, religious: -8, cultural: -5 } },
+          { name: "Chủ nghĩa Khách quan (Objectivism)", nameEn: "Objectivism", description: "Đề cao ích kỷ hợp lý. Chỉ có tư bản tuyệt đối mới bảo vệ trí tuệ cá nhân khỏi đám đông.", descriptionEn: "Promotes rational selfishness. Only absolute capitalism protects individual intellect from the mob.", stats: { power: -7, civil: -8, economic: 10, religious: -9, cultural: -4 } },
+          { name: "Chủ nghĩa Nông nghiệp (Agrarianism)", nameEn: "Agrarianism", description: "Xã hội nông thôn với nông dân tự do làm chủ đất đai là hình mẫu lý tưởng.", descriptionEn: "Rural society with free farmers owning their land is the ideal model.", stats: { power: -3, economic: 2, religious: 4, cultural: 6, societal: 3 } },
+          { name: "Siêu nhân loại (Transhumanism)", nameEn: "Transhumanism", description: "Dùng công nghệ gen, cyborg, AI để tiến hóa con người vượt qua mọi giới hạn sinh học.", descriptionEn: "Use genetic engineering, cyborgs, and AI to evolve humans past all biological limits.", stats: { power: -2, civil: -4, religious: -10, cultural: -10, societal: -6 } },
+          { name: "Tân Luddite (Neo-Luddism)", nameEn: "Neo-Luddism", description: "Cực kỳ căm ghét và chống lại AI, tự động hóa và sự phụ thuộc vào công nghệ số.", descriptionEn: "Extremely hates and opposes AI, automation, and reliance on digital technology.", stats: { power: 2, economic: -5, cultural: 8 } },
+          { name: "Tư bản Hồng (Pink Capitalism)", nameEn: "Pink Capitalism", description: "Tư bản thị trường nhưng chủ động vay mượn phong trào LGBTQ+ để thương mại hóa kiếm tiền.", descriptionEn: "Market capitalism that actively co-opts LGBTQ+ movements for commercial profit.", stats: { diplomatic: -6, economic: 9, religious: -7, cultural: -9, societal: -8 } },
+          { name: "Chủ nghĩa Trọng thương (Mercantilism)", nameEn: "Mercantilism", description: "Nhà nước can thiệp kinh tế, dùng thuế quan cao tối đa hóa xuất khẩu, tích lũy tài sản.", descriptionEn: "State intervenes in economy, using high tariffs to maximize exports and accumulate wealth.", stats: { power: 6, diplomatic: 8, economic: -4 } },
+          { name: "Chủ nghĩa Trộm cướp (Kleptocracy)", nameEn: "Kleptocracy", description: "Hệ thống cầm quyền tham nhũng, nhà nước vận hành để bòn rút tài nguyên làm giàu cá nhân.", descriptionEn: "Corrupt ruling system, state operates to siphon resources to enrich individuals.", stats: { power: 8, political: 8, civil: 6, economic: 4 } },
+          { name: "Chủ nghĩa Thân hữu (Crony Capitalism)", nameEn: "Crony Capitalism", description: "Tập đoàn độc quyền thâu tóm nhà nước, viết luật để tiêu diệt đối thủ nhỏ lẻ và bóc lột.", descriptionEn: "Monopolies capture the state, writing laws to destroy small competitors and exploit.", stats: { power: 6, political: 7, civil: 5, economic: 9 } },
+          { name: "Tư bản Sinh thái (Eco-Capitalism)", nameEn: "Eco-Capitalism", description: "Bảo vệ môi trường không cần cấm đoán. Để thị trường tự do, công ty công nghệ xanh tự giải quyết.", descriptionEn: "Protect environment without bans. Leave it to free markets, green tech companies will solve it.", stats: { power: -3, civil: -2, economic: 8, cultural: -3 } },
+          { name: "Bảo thủ Sinh học (Bioconservatism)", nameEn: "Bioconservatism", description: "Cấm can thiệp gen, cấy ghép chip. Cơ thể và DNA tự nhiên của con người là thiêng liêng.", descriptionEn: "Ban gene editing and chip implants. The natural human body and DNA are sacred.", stats: { power: 4, civil: 5, religious: 6, cultural: 9 } },
+          { name: "Hậu Nhân loại (Post-Humanism)", nameEn: "Post-Humanism", description: "Mục tiêu xóa bỏ hoàn toàn sinh học con người để tiến hóa thành loài mới bằng máy móc/năng lượng.", descriptionEn: "Goal to completely abolish human biology to evolve into a new species via machines/energy.", stats: { power: -4, civil: -5, religious: -10, cultural: -10 } },
+          { name: "Sinh thái học Sâu (Deep Ecology)", nameEn: "Deep Ecology", description: "Quyền động thực vật quan trọng hơn nhân quyền. Sẵn sàng giảm dân số để cứu thiên nhiên.", descriptionEn: "Rights of flora/fauna supersede human rights. Willing to reduce population to save nature.", stats: { power: 5, economic: -9, religious: -5, cultural: -7 } },
+          { name: "Cai trị bằng Thuật toán (Cyberocracy)", nameEn: "Cyberocracy", description: "Con người tham nhũng. Đất nước giao cho Siêu AI và thuật toán điều hành lạnh lùng.", descriptionEn: "Humans are corrupt. The country is handed over to Super AI and algorithms to run coldly.", stats: { power: 8, political: 9, civil: 6, religious: -8, cultural: -6 } },
+          { name: "Môi trường Tự do (Free-Market Environmentalism)", nameEn: "Free-Market Environmentalism", description: "Môi trường được bảo vệ tốt nhất khi tư nhân hóa tự nhiên và áp dụng quyền tài sản nghiêm ngặt.", descriptionEn: "Environment is best protected by privatizing nature and applying strict property rights.", stats: { power: -5, economic: 9, cultural: -2 } },
+          { name: "Chủ nghĩa Hòa bình (Pacifism)", nameEn: "Pacifism", description: "Tuyệt đối phản đối chiến tranh. Quân đội phải bị giải tán, mọi xung đột giải quyết bằng thương lượng.", descriptionEn: "Absolutely opposes war. Armies must be disbanded, all conflicts solved by negotiation.", stats: { power: -4, diplomatic: -7, military: -10, civil: -5, cultural: -4 } },
+          { name: "Chủ nghĩa Thế giới (Cosmopolitanism)", nameEn: "Cosmopolitanism", description: "Đề cao danh tính 'Công dân toàn cầu' vượt lên quốc tịch hay dân tộc, xóa ranh giới.", descriptionEn: "Promotes 'Global Citizen' identity above nationality or ethnicity, erasing borders.", stats: { diplomatic: -10, military: -8, cultural: -7, societal: -10 } },
+          { name: "Nhân bản Thế tục (Secular Humanism)", nameEn: "Secular Humanism", description: "Lấy con người và khoa học làm trung tâm, sống có đạo đức bằng lý trí không cần tôn giáo.", descriptionEn: "Human and science-centered, living ethically by reason without the need for religion.", stats: { power: -3, political: -6, civil: -7, religious: -10, cultural: -8, societal: -8 } },
+          { name: "Chủ nghĩa Biệt lập (Isolationism)", nameEn: "Isolationism", description: "Tập trung nội bộ. Rút khỏi hiệp ước quốc tế và từ chối can thiệp ngoại giao.", descriptionEn: "Focus internally. Withdraw from international treaties and refuse diplomatic intervention.", stats: { diplomatic: 10, military: -5, economic: 6, societal: 8 } },
+          { name: "Tự trị Địa phương (Communalism)", nameEn: "Communalism", description: "Quyền lực phân tán về làng xã tự quản. Tự tổ chức kinh tế và bầu cử mặt đối mặt.", descriptionEn: "Power distributed to self-governing villages. Self-organized economy and face-to-face elections.", stats: { power: -9, political: -9, economic: -6, societal: -2 } },
+          { name: "Liên bang Dân chủ (Democratic Confederalism)", nameEn: "Democratic Confederalism", description: "Không nhà nước quốc gia. Xã hội vận hành bằng hội đồng cơ sở có mặt phụ nữ và thiểu số.", descriptionEn: "No nation-state. Society run by grassroots councils including women and minorities.", stats: { power: -8, political: -9, diplomatic: -6, civil: -6, economic: -6, cultural: -6 } },
+          { name: "Chủ nghĩa Linh hồn (Soulism)", nameEn: "Soulism", description: "Các định luật vật lý như trọng lực cũng là áp bức. Dùng công nghệ/tâm linh giải phóng khỏi thực tại.", descriptionEn: "Physical laws like gravity are oppression. Use tech/spirituality to break free from reality.", stats: { power: -10, civil: -10, economic: -10, religious: -10, cultural: -10 } },
+          { name: "Độc tài Phúc lợi (Social Authoritarianism)", nameEn: "Social Authoritarianism", description: "Kinh tế mở, phúc lợi tốt, nhưng chính trị và quyền tự do ngôn luận bị kiểm soát gắt gao.", descriptionEn: "Open economy, good welfare, but politics and free speech are strictly controlled.", stats: { power: 7, political: 7, civil: 8, economic: -2, cultural: 2, societal: 4 } },
+          { name: "Chủ nghĩa Posadas (Posadism)", nameEn: "Posadism", description: "Tin rằng Chiến tranh hạt nhân và Người ngoài hành tinh mới tạo ra Xã hội Cộng sản hoàn hảo.", descriptionEn: "Believes Nuclear War and Aliens will create the perfect Communist Society.", stats: { power: 8, diplomatic: -10, military: 10, economic: -10, religious: -10, cultural: -8 } },
+          { name: "Dân chủ Phi tự do (Illiberal Democracy)", nameEn: "Illiberal Democracy", description: "Có bầu cử, nhưng chính phủ hạn chế tự do báo chí, độc quyền kiểm soát thông tin triệt tiêu đối lập.", descriptionEn: "Has elections, but the government restricts press freedom, monopolizing information.", stats: { political: 5, civil: 7, cultural: 4 } },
+          { name: "Chủ nghĩa Kemal (Kemalism)", nameEn: "Kemalism", description: "Độc tài quốc gia, nhưng ép buộc thế tục hóa triệt để và hiện đại hóa văn hóa phương Tây.", descriptionEn: "National dictatorship, but forces radical secularization and Western modernization.", stats: { power: 6, political: 4, diplomatic: 6, religious: -10, cultural: -5, societal: 6 } },
+          { name: "Chủ nghĩa Peron (Peronism)", nameEn: "Peronism", description: "Kinh tế bảo vệ công nhân, nhưng chính trị độc tài, sùng bái cá nhân và quốc gia cực hữu.", descriptionEn: "Pro-worker economy, but dictatorial politics, cult of personality, and far-right nationalism.", stats: { power: 7, political: 5, economic: -6, cultural: 4, societal: 7 } },
+          { name: "Chủ nghĩa Ba'ath (Ba'athism)", nameEn: "Ba'athism", description: "Chủ nghĩa dân tộc Arab kết hợp với kinh tế XHCN nhà nước và một đảng độc tài, thế tục.", descriptionEn: "Arab nationalism combined with state socialist economics and a dictatorial secular party.", stats: { power: 8, political: 8, diplomatic: 7, economic: -5, religious: -6, societal: 8 } },
+          { name: "Chủ nghĩa Tito (Titoism)", nameEn: "Titoism", description: "Cộng sản độc lập. Ủng hộ thị trường XHCN, mở cửa ngoại giao và phi tập trung hóa.", descriptionEn: "Independent communism. Supports socialist markets, open diplomacy, and decentralization.", stats: { power: 5, political: 6, diplomatic: -4, economic: -3, cultural: -2 } },
+          { name: "Chủ nghĩa Chỉ đạo (Dirigisme)", nameEn: "Dirigisme", description: "Kinh tế thị trường tư bản, nhưng Nhà nước can thiệp sâu quy hoạch công nghiệp mũi nhọn.", descriptionEn: "Capitalist market economy, but State intervenes deeply in planning key industries.", stats: { power: 5, economic: 2, diplomatic: 4 } },
+          { name: "Tự do Trắc ẩn (Bleeding-Heart Libertarianism)", nameEn: "Bleeding-Heart Libertarianism", description: "Thị trường tự do tuyệt đối vì tin rằng chỉ có thị trường tự do mới giúp đỡ người nghèo hiệu quả nhất.", descriptionEn: "Absolute free market, believing it's the most effective way to help the poor.", stats: { power: -7, civil: -6, economic: 7, cultural: -4 } },
+          { name: "Tự do Quốc gia (National Liberalism)", nameEn: "National Liberalism", description: "Tự do kinh tế cá nhân, nhưng đòi hỏi biên giới đóng kín và bản sắc dân tộc đồng nhất.", descriptionEn: "Individual economic freedom, but demands closed borders and uniform national identity.", stats: { power: -4, diplomatic: 7, economic: 5, societal: 8 } },
+          { name: "Chủ nghĩa Cộng đồng (Communitarianism)", nameEn: "Communitarianism", description: "Cá nhân không thể độc lập mà phải gắn liền với trách nhiệm, nghĩa vụ đạo đức của cộng đồng.", descriptionEn: "Individuals cannot be independent but are tied to community responsibilities and morals.", stats: { power: 3, civil: 4, cultural: 5, societal: 4 } },
+          { name: "Cộng hòa Dân sự (Civic Republicanism)", nameEn: "Civic Republicanism", description: "Tự do là sự tham gia tích cực của công dân vào chính trị để ngăn chặn tham nhũng, độc tài.", descriptionEn: "Freedom is citizens' active participation in politics to prevent corruption and dictatorship.", stats: { power: -4, political: -7, civil: -5, cultural: 2 } },
+          { name: "Bảo thủ Trắc ẩn (Compassionate Conservatism)", nameEn: "Compassionate Conservatism", description: "Văn hóa truyền thống, nhưng dùng các tổ chức tôn giáo, từ thiện tư nhân để giúp người nghèo.", descriptionEn: "Traditional culture, but uses religious orgs and private charity to help the poor.", stats: { power: -2, economic: 4, religious: 6, cultural: 5 } },
+          { name: "Vô chính phủ Tôn giáo (Religious Anarchism)", nameEn: "Religious Anarchism", description: "Bác bỏ nhà nước vì tin rằng chỉ Thượng đế mới có quyền phán xét; luật pháp con người là báng bổ.", descriptionEn: "Rejects the state, believing only God can judge; human law is blasphemy.", stats: { power: -10, civil: -10, economic: -5, religious: 10, cultural: 4 } },
+          { name: "Dân chủ Hồi giáo (Islamic Democracy)", nameEn: "Islamic Democracy", description: "Bầu cử tự do, nhưng mọi đạo luật được thông qua tuyệt đối không được trái với luật Sharia.", descriptionEn: "Free elections, but laws passed absolutely must not contradict Sharia law.", stats: { power: 0, political: -6, civil: 4, religious: 9, cultural: 8, societal: 6 } },
+          { name: "Dân chủ Cấp tiến (Radical Democracy)", nameEn: "Radical Democracy", description: "Dân chủ trực tiếp ở mọi nơi: Không chỉ thùng phiếu, mà phải áp dụng cả trong trường học, công xưởng.", descriptionEn: "Direct democracy everywhere: Not just ballot boxes, but applied in schools, factories.", stats: { power: -6, political: -10, economic: -6, cultural: -5 } },
+          { name: "Xã hội Chủ nghĩa Sinh thái (Eco-Socialism)", nameEn: "Eco-Socialism", description: "Tư bản tàn phá môi trường. Chỉ có kinh tế kế hoạch phân phối lại mới cứu được Trái Đất.", descriptionEn: "Capitalism destroys the environment. Only a planned redistributive economy can save Earth.", stats: { power: 4, economic: -9, cultural: -4, societal: -3 } },
+          { name: "XHCN Nông nghiệp (Agrarian Socialism)", nameEn: "Agrarian Socialism", description: "Lấy nông dân làm gốc. Tịch thu đất đai của địa chủ để chia đều cho hộ nông dân canh tác nhỏ.", descriptionEn: "Farmer-centric. Confiscate landlord land to divide equally among small farming households.", stats: { power: 2, economic: -8, cultural: 5, societal: 2 } },
+          { name: "Chủ nghĩa Bảo hộ (Protectionism)", nameEn: "Protectionism", description: "Mọi chính sách phục vụ mục đích: Đóng cửa thị trường, áp thuế cao để bảo vệ ngành sản xuất nội địa.", descriptionEn: "Policies serve one goal: Close markets, high tariffs to protect domestic manufacturing.", stats: { diplomatic: 9, economic: -3, societal: 4 } },
+          { name: "Chủ nghĩa Cải lương (Reformism)", nameEn: "Reformism", description: "Chấp nhận hệ thống hiện tại, thay đổi cực kỳ chậm rãi qua đạo luật, chống cách mạng bạo lực.", descriptionEn: "Accepts the current system, changes extremely slowly via laws, anti-violent revolution.", stats: { power: 1, political: -2, military: -5, economic: -1, cultural: -1 } },
+          { name: "Độc tài Công nghệ (Techno-Authoritarianism)", nameEn: "Techno-Authoritarianism", description: "Sử dụng AI, Big Data, điểm tín nhiệm xã hội để kiểm soát toàn diện tư tưởng và hành vi.", descriptionEn: "Uses AI, Big Data, social credit scores for comprehensive control of thoughts and behavior.", stats: { power: 10, political: 9, civil: 10, cultural: -2 } },
+          { name: "Tư bản Phúc lợi (Welfare Capitalism)", nameEn: "Welfare Capitalism", description: "Công ty tư nhân chủ động cung cấp bảo hiểm, nhà ở cho nhân viên để ngăn họ tham gia công đoàn.", descriptionEn: "Private companies proactively provide insurance and housing to deter unionization.", stats: { power: 2, economic: 4, cultural: 1 } },
+          { name: "Tự do Cánh tả (Left-Rothbardianism)", nameEn: "Left-Rothbardianism", description: "Nếu xóa nhà nước, tập đoàn sẽ sụp đổ. Thị trường tự do thuần túy tạo bình đẳng cho lao động.", descriptionEn: "If the state is erased, corporations collapse. Pure free markets create labor equality.", stats: { power: -9, civil: -8, economic: 4, cultural: -5 } },
+          { name: "Tư tưởng Hồ Chí Minh (Ho Chi Minh Thought)", nameEn: "Ho Chi Minh Thought", description: "Kết hợp Chủ nghĩa Mác-Lenin với truyền thống Việt Nam. Đề cao độc lập dân tộc, Đảng lãnh đạo, tiến lên XHCN linh hoạt.", descriptionEn: "Combines Marxism-Leninism with Vietnamese traditions. Emphasizes national independence, Party leadership, flexible advance to Socialism.", stats: { power: 7, political: 8, diplomatic: 6, economic: -6, religious: -4, cultural: -2, societal: 5 } },
+          { name: "Cộng sản Tôn giáo (Religious Communism)", nameEn: "Religious Communism", description: "Xóa bỏ tư hữu và sống quần tụ bình đẳng, hoàn toàn dựa trên nền tảng giáo lý và tình yêu thương của tôn giáo.", descriptionEn: "Abolishes private property and lives in egalitarian communes, entirely based on religious doctrine and love.", stats: { power: -4, political: -2, economic: -10, religious: 10, cultural: 6 } },
+          { name: "Cộng sản Nguyên thủy (Primitive Communism)", nameEn: "Primitive Communism", description: "Thời tiền sử. Không giai cấp, không nhà nước, không tư hữu, sống thành các bộ lạc săn bắt hái lượm.", descriptionEn: "Prehistoric era. Classless, stateless, no private property, living in hunter-gatherer tribes.", stats: { power: -10, political: -8, economic: -10, cultural: 8, societal: -2 } },
+          { name: "Cộng sản Cánh tả (Left Communism)", nameEn: "Left Communism", description: "Ủng hộ cách mạng vô sản nhưng chống độc tài kiểu Stalin. Ưu tiên hội đồng công nhân tự phát hơn đảng phái.", descriptionEn: "Supports proletarian revolution but opposes Stalinist dictatorship. Prioritizes spontaneous workers' councils over parties.", stats: { power: -5, political: -6, diplomatic: -8, economic: -10, cultural: -5 } },
+          { name: "Chủ nghĩa Stalin (Stalinism)", nameEn: "Stalinism", description: "Toàn trị tột độ. Tập trung kinh tế tối đa, sùng bái cá nhân và sử dụng khủng bố để triệt tiêu mọi đối lập.", descriptionEn: "Extreme totalitarianism. Maximum economic centralization, cult of personality, and terror to eliminate opposition.", stats: { power: 10, political: 10, diplomatic: 8, military: 9, civil: 10, economic: -10, religious: -9, cultural: 4 } },
+          { name: "Bảo thủ Quốc gia (National Conservatism)", nameEn: "National Conservatism", description: "Giữa Bảo thủ và Độc tài Vị quốc. Bảo vệ mạnh mẽ chủ quyền, chống nhập cư, đòi hỏi đồng hóa nhưng vẫn giữ dân chủ.", descriptionEn: "Between Conservatism and Authoritarian Nationalism. Protects sovereignty, anti-immigration, demands assimilation but keeps democracy.", stats: { power: 5, political: 2, diplomatic: 8, civil: 4, economic: 2, cultural: 8, societal: 8 } },
+          { name: "Dân chủ Kỹ trị (Techno-Democracy)", nameEn: "Techno-Democracy", description: "Sử dụng công nghệ để mở rộng sự tham gia trực tiếp của dân vào chính trị (bầu cử điện tử, minh bạch dữ liệu).", descriptionEn: "Uses technology to expand direct citizen participation in politics (e-voting, transparent data).", stats: { power: -4, political: -8, civil: -5, cultural: -6 } },
+          { name: "Tự do Phái sinh Cánh tả (Left-Libertarianism)", nameEn: "Left-Libertarianism", description: "Thị trường tự do tuyệt đối, nhưng tập trung vào việc trao quyền cho công đoàn và nhóm thiểu số chống lại tư bản độc quyền.", descriptionEn: "Absolute free market, but focused on empowering unions and minorities against monopoly capitalism.", stats: { power: -8, political: -5, civil: -8, economic: 3, cultural: -7, societal: -6 } },
+          { name: "Sinh thái Tiên phong (Eco-Vanguardism)", nameEn: "Eco-Vanguardism", description: "Bảo vệ môi trường là số 1. Sẵn sàng dùng nhà nước độc tài khẩn cấp để áp đặt quy định xanh và tiêu diệt ngành ô nhiễm.", descriptionEn: "Environment is #1. Willing to use an emergency dictatorial state to impose green rules and destroy polluting industries.", stats: { power: 8, political: 7, economic: -6, cultural: -4, societal: 0 } },
+          { name: "Tư bản Cổ hữu (Paleocapitalism)", nameEn: "Paleocapitalism", description: "Thị trường tự do tàn nhẫn kiểu thế kỷ 19. Không luật lao động, cá nhân tự chịu trách nhiệm với sự sống còn.", descriptionEn: "Ruthless 19th-century free markets. No labor laws, individuals are solely responsible for their survival.", stats: { power: -5, civil: -3, economic: 10, cultural: 6 } },
+          { name: "Dân chủ Cơ sở (Grassroots Democracy)", nameEn: "Grassroots Democracy", description: "Mọi quyền lực chính trị phải xuất phát từ cấp độ thấp nhất (khu phố, làng xã). Chống can thiệp của chính phủ trung ương.", descriptionEn: "All political power must stem from the lowest level (neighborhoods, villages). Opposes central gov intervention.", stats: { power: -9, political: -9, economic: -2, cultural: -2 } }
         ];
 
+        // 60 CÂU HỎI (Đã thêm textEn - dịch mẫu 10 câu đầu)
         const rawQuestions = [
-          { text: "Về biến đổi khí hậu, cứ để thị trường tự do và đổi mới công nghệ tự giải quyết sẽ tốt hơn là nhà nước ra lệnh cấm đoán.", effects: { economic: 1, power: -0.5 } }, 
-          { text: "Việc chỉnh sửa gen hoặc cấy ghép máy móc vào não người là vi phạm các quy luật tự nhiên thiêng liêng, cần phải bị cấm kịch liệt.", effects: { cultural: 1.5, religious: 1, power: 0.5 } },
-          { text: "Nếu một chính sách được dữ liệu khoa học chứng minh là hiệu quả tuyệt đối, ta phải áp dụng ngay dù nó vi phạm dân chủ hay tự do.", effects: { power: 1.5, political: 1.5, civil: 1 } },
-          { text: "Một xã hội lý tưởng là nơi mọi công dân đều là quân nhân, và quân đội điều hành luôn các vấn đề của đất nước.", effects: { military: 2, power: 1, civil: 1 } }, 
-          { text: "Chính phủ và các tập đoàn lớn luôn cấu kết tham nhũng để bóc lột người dân; cần dỡ bỏ cả hai để công nhân tự do buôn bán.", effects: { power: -1.5, economic: -0.5, political: -1 } }, 
-          { text: "Mọi sinh vật (động vật, cây cỏ) đều có quyền sống bình đẳng như con người; nhân loại không có đặc quyền tàn phá chúng vì lợi ích riêng.", effects: { economic: -1.5, cultural: -1 } }, 
-          { text: "Các cộng đồng nên được tự do tách biệt và sống theo sắc tộc/văn hóa riêng của họ mà không bị ép buộc phải đa dạng hòa nhập.", effects: { societal: 1.5, power: -1 } }, 
-          { text: "Nhà nước nên can thiệp bảo vệ người lao động và cấp y tế, nhưng vẫn phải giữ kỷ luật sắt và các giá trị văn hóa truyền thống cứng rắn.", effects: { economic: -1, cultural: 1.5, power: 1 } }, 
-          { text: "Kể cả các định luật vật lý như trọng lực cũng là một dạng áp bức; con người cần tìm mọi cách để giải phóng tâm trí khỏi thực tại.", effects: { cultural: -2, religious: -2, civil: -1 } }, 
-          { text: "Không có hệ tư tưởng nào là hoàn hảo. Một chính phủ tốt là biết chắp vá linh hoạt mọi chính sách miễn sao dân no ấm và phát triển.", effects: { political: 0.5, diplomatic: 0 } }, 
-          { text: "Một quốc gia cần hiện đại hóa và thế tục hóa triệt để, thậm chí dùng quân đội ép dân từ bỏ tôn giáo để tiến bộ.", effects: { power: 1, religious: -1.5, cultural: -1 } }, 
-          { text: "Để giải quyết nghèo đói, thay vì chờ nhà nước phát phúc lợi, ta nên để các tổ chức tôn giáo và hội thiện nguyện tư nhân lo liệu.", effects: { economic: 1, religious: 1.5, power: -0.5 } }, 
-          { text: "Môi trường công sở cũng phải áp dụng dân chủ: Nhân viên có quyền biểu quyết sa thải giám đốc và quyết định chiến lược công ty.", effects: { political: -1.5, economic: -1 } }, 
-          { text: "Luật pháp do con người tạo ra là sự kiêu ngạo; con người chỉ nên sống tự do và phục tùng duy nhất các phán quyết của Thượng Đế.", effects: { power: -1.5, civil: -1, religious: 2 } }, 
-          { text: "Nhà nước nên hỗ trợ các tập đoàn công nghệ lớn thu thập dữ liệu sinh trắc học của mọi công dân để loại bỏ hoàn toàn mầm mống tội phạm.", effects: { power: 1.5, civil: 2, cultural: -0.5 } }, 
-          { text: "Nền dân chủ bầu cử là tốt, nhưng quốc hội tuyệt đối không được phép thông qua bất kỳ luật nào trái với giáo lý của tôn giáo đa số.", effects: { political: -0.5, civil: 1, religious: 2, cultural: 1.5 } }, 
-          { text: "Tự do cá nhân và kinh tế mở là tuyệt vời, nhưng ta phải đóng chặt biên giới lại để bảo vệ dân tộc khỏi văn hóa ngoại lai.", effects: { economic: 1, diplomatic: 1.5, societal: 1.5, civil: -0.5 } }, 
-          { text: "Chủ nghĩa tư bản tàn phá Trái Đất vì lợi nhuận; chỉ có một chính quyền trung ương tịch thu và kế hoạch hóa kinh tế mới cứu được tự nhiên.", effects: { economic: -2, power: 1 } }, 
-          { text: "Các công ty tư nhân lớn nên tự lo nhà ở, trường học, bệnh viện cho nhân viên của mình để họ không cần dựa dẫm vào chính phủ hay công đoàn.", effects: { economic: 1.5, power: 0.5 } }, 
-          { text: "Cá nhân tự do là tốt, nhưng sự ràng buộc về nghĩa vụ chăm sóc gia đình, họ hàng và cộng đồng địa phương quan trọng hơn tham vọng cá nhân.", effects: { civil: 1, cultural: 1, societal: 1 } }, 
-          { text: "Sự phát triển của AI đang hủy hoại bản chất con người; ta nên quay về lối sống đơn giản, bài trừ công nghệ.", effects: { cultural: 1, economic: -0.5 } },
-          { text: "Đất đai thuộc về tự nhiên; ai chiếm hữu nó để sinh lời phải trả một khoản thuế đất cực cao cho xã hội.", effects: { economic: -0.5, power: 0.5 } },
-          { text: "Chính phủ cánh tả phải ưu tiên bảo vệ công nhân trong nước trước, không nên lo chuyện bao đồng quốc tế.", effects: { diplomatic: 1, economic: -1 } },
-          { text: "Xã hội vận hành theo quy luật sinh tồn: kẻ yếu kém nghèo đói phải bị đào thải để nhường chỗ cho người xuất sắc.", effects: { economic: 1, cultural: 1, societal: 1 } },
-          { text: "Khái niệm 'Công dân toàn cầu' cao quý hơn bất kỳ lòng tự hào dân tộc hay tình yêu tổ quốc hạn hẹp nào.", effects: { diplomatic: -1.5, societal: -1 } },
-          { text: "Cấu trúc gia đình và vai trò giới tính hiện tại là hệ thống bóc lột của chế độ phụ quyền cần phải bị đập bỏ.", effects: { cultural: -1.5, societal: -1 } },
-          { text: "Chính phủ nên kiểm duyệt internet để ngăn chặn các tư tưởng thù địch và bảo vệ an ninh quốc gia.", effects: { civil: 1, cultural: 1, political: 1 } },
-          { text: "Các tập đoàn đa quốc gia có quá nhiều quyền lực và cần bị tháo dỡ để bảo vệ người lao động địa phương.", effects: { economic: -1, diplomatic: 1, power: -0.5 } },
-          { text: "Nhà nước nên hỗ trợ tài chính cho các tổ chức tôn giáo vì họ làm công tác xã hội và từ thiện rất tốt.", effects: { religious: 1, economic: 1 } },
-          { text: "Chúng ta phải chấp nhận giảm tăng trưởng kinh tế, thậm chí can thiệp thị trường, để bảo vệ môi trường.", effects: { economic: -1, cultural: -1 } },
-          { text: "Nghĩa vụ quân sự bắt buộc là cần thiết để rèn luyện thanh niên thành những công dân có kỷ luật.", effects: { military: 1, societal: 1, cultural: 1 } },
-          { text: "Mở cửa biên giới tự do cho lao động nhập cư sẽ làm kinh tế thịnh vượng và văn hóa phong phú hơn.", effects: { diplomatic: -1, societal: -1, economic: 1 } },
-          { text: "Cá nhân có toàn quyền quyết định về cơ thể mình (kể cả quyền an tử) mà không cần nhà nước can thiệp.", effects: { civil: -1, cultural: -1, religious: -1 } },
-          { text: "Không một tổ chức, chính quyền hay tập thể nào có quyền áp đặt luật lệ lên sự tự quyết của cá nhân.", effects: { power: -1, civil: -0.5 } },
-          { text: "Thị trường tự do, nếu không có sự can thiệp của nhà nước, sẽ tự điều chỉnh và mang lại sự giàu có cho tất cả.", effects: { economic: 1 } },
-          { text: "Tôn giáo là việc cá nhân và hoàn toàn không nên có mặt trong bất kỳ hệ thống giáo dục hay luật pháp nào.", effects: { religious: -1 } },
-          { text: "Người dân nên được bỏ phiếu trực tiếp cho các chính sách quan trọng, thay vì giao phó cho các chính trị gia.", effects: { political: -1 } },
-          { text: "Lợi ích và chủ quyền quốc gia phải luôn được đặt lên trên các hiệp ước hợp tác hay tổ chức quốc tế.", effects: { diplomatic: 1 } },
-          { text: "Chính phủ không bao giờ được phép thu thập dữ liệu riêng tư của người dân, dù lý do là gì.", effects: { civil: -1 } },
-          { text: "Tôi hoàn toàn ủng hộ các quyền lợi của cộng đồng LGBTQ+, bao gồm cả quyền sử dụng nhà vệ sinh đa giới.", effects: { cultural: -1 } },
-          { text: "Một lực lượng quân đội hùng mạnh, áp đảo là cách duy nhất để quốc gia không bị bắt nạt.", effects: { military: 1 } },
-          { text: "Người nhập cư không cần phải từ bỏ bản sắc văn hóa gốc của họ khi đến sống ở một đất nước mới.", effects: { societal: -1 } },
-          { text: "Trong thời kỳ khủng hoảng, một nhà lãnh đạo có quyền lực tuyệt đối là cần thiết để duy trì trật tự.", effects: { power: 1, political: 1 } },
-          { text: "Chính phủ cần đánh thuế nặng người giàu để cung cấp y tế và giáo dục miễn phí cho người nghèo.", effects: { economic: -1 } },
-          { text: "Các cơ sở tôn giáo (nhà thờ, đền chùa) phải nộp thuế đầy đủ như mọi doanh nghiệp kinh doanh khác.", effects: { religious: -1, economic: -0.5 } },
-          { text: "Chế độ nhiều đảng phái chỉ gây ra sự tranh cãi mệt mỏi và làm chậm quá trình phát triển đất nước.", effects: { political: 1 } },
-          { text: "Thế giới sẽ tốt đẹp hơn nếu chúng ta xóa bỏ biên giới và hướng tới một cộng đồng toàn cầu.", effects: { diplomatic: -1 } },
-          { text: "Việc lắp đặt camera giám sát ở mọi nơi công cộng là cái giá xứng đáng để không còn tội phạm.", effects: { civil: 1 } },
-          { text: "Sự suy đồi đạo đức hiện nay bắt nguồn từ việc chúng ta từ bỏ các giá trị gia đình truyền thống.", effects: { cultural: 1 } },
-          { text: "Chúng ta nên cắt giảm triệt để ngân sách quân sự để chuyển vốn sang các vấn đề dân sinh.", effects: { military: -1 } },
-          { text: "Mọi công dân trong nước bắt buộc phải giao tiếp bằng một ngôn ngữ quốc gia duy nhất ở nơi công cộng.", effects: { societal: 1 } },
-          { text: "Mọi hình thức nhà nước và pháp luật thực chất chỉ là công cụ để tước đoạt tự do; con người nên tương tác tự nguyện.", effects: { power: -1, cultural: -0.5 } },
-          { text: "Các dịch vụ mang tính sống còn như y tế và giáo dục tuyệt đối không nên được vận hành vì lợi nhuận.", effects: { economic: -1 } },
-          { text: "Nên có các buổi giảng dạy về giáo lý cơ bản hoặc thời gian cầu nguyện trong các trường học công lập.", effects: { religious: 1 } },
-          { text: "Cần áp dụng các rào cản thuế quan mạnh mẽ để chặn hàng ngoại nhập, bảo vệ nền sản xuất nội địa.", effects: { diplomatic: 1, economic: -0.5 } },
-          { text: "Người tiết lộ bí mật quốc gia để vạch trần sai phạm của chính quyền (whistleblower) là anh hùng.", effects: { civil: -1, power: -0.5 } },
-          { text: "Các chuẩn mực đạo đức cũ kỹ chỉ là sản phẩm do con người tự tạo ra, chúng cần bị phá bỏ.", effects: { cultural: -1, religious: -0.5 } },
-          { text: "Can thiệp quân sự vào lãnh thổ nước khác hiếm khi mang lại hòa bình mà chỉ gây thêm thù hận.", effects: { military: -1 } },
-          { text: "Sự đa dạng về sắc tộc và văn hóa là sức mạnh cốt lõi làm cho một cộng đồng trở nên vĩ đại.", effects: { societal: -1 } },
-          { text: "Một chính quyền trung ương mạnh là cần thiết để quy hoạch hạ tầng và phát triển đồng bộ toàn quốc.", effects: { power: 1 } }
+          { text: "Về biến đổi khí hậu, cứ để thị trường tự do và đổi mới công nghệ tự giải quyết sẽ tốt hơn là nhà nước ra lệnh cấm đoán.", textEn: "For climate change, it's better to let the free market and tech innovation solve it rather than state bans.", effects: { economic: 1, power: -0.5 } }, 
+          { text: "Việc chỉnh sửa gen hoặc cấy ghép máy móc vào não người là vi phạm các quy luật tự nhiên thiêng liêng, cần phải bị cấm kịch liệt.", textEn: "Gene editing or implanting machines in the human brain violates sacred natural laws and must be strictly banned.", effects: { cultural: 1.5, religious: 1, power: 0.5 } },
+          { text: "Nếu một chính sách được dữ liệu khoa học chứng minh là hiệu quả tuyệt đối, ta phải áp dụng ngay dù nó vi phạm dân chủ hay tự do.", textEn: "If a policy is scientifically proven to be absolutely effective, it must be applied immediately even if it violates democracy or freedom.", effects: { power: 1.5, political: 1.5, civil: 1 } },
+          { text: "Một xã hội lý tưởng là nơi mọi công dân đều là quân nhân, và quân đội điều hành luôn các vấn đề của đất nước.", textEn: "An ideal society is where every citizen is a soldier, and the military runs all affairs of the country.", effects: { military: 2, power: 1, civil: 1 } }, 
+          { text: "Chính phủ và các tập đoàn lớn luôn cấu kết tham nhũng để bóc lột người dân; cần dỡ bỏ cả hai để công nhân tự do buôn bán.", textEn: "Governments and big corporations always collude to exploit the people; both should be dismantled for free worker trade.", effects: { power: -1.5, economic: -0.5, political: -1 } }, 
+          { text: "Mọi sinh vật (động vật, cây cỏ) đều có quyền sống bình đẳng như con người; nhân loại không có đặc quyền tàn phá chúng vì lợi ích riêng.", textEn: "All living beings (animals, plants) have equal rights to life as humans; humanity has no privilege to destroy them for selfish gain.", effects: { economic: -1.5, cultural: -1 } }, 
+          { text: "Các cộng đồng nên được tự do tách biệt và sống theo sắc tộc/văn hóa riêng của họ mà không bị ép buộc phải đa dạng hòa nhập.", textEn: "Communities should be free to segregate and live by their own ethnicity/culture without forced diversity integration.", effects: { societal: 1.5, power: -1 } }, 
+          { text: "Nhà nước nên can thiệp bảo vệ người lao động và cấp y tế, nhưng vẫn phải giữ kỷ luật sắt và các giá trị văn hóa truyền thống cứng rắn.", textEn: "The state should intervene to protect workers and provide healthcare, but must maintain iron discipline and strict traditional cultural values.", effects: { economic: -1, cultural: 1.5, power: 1 } }, 
+          { text: "Kể cả các định luật vật lý như trọng lực cũng là một dạng áp bức; con người cần tìm mọi cách để giải phóng tâm trí khỏi thực tại.", textEn: "Even physical laws like gravity are a form of oppression; humans must find ways to free their minds from reality.", effects: { cultural: -2, religious: -2, civil: -1 } }, 
+          { text: "Không có hệ tư tưởng nào là hoàn hảo. Một chính phủ tốt là biết chắp vá linh hoạt mọi chính sách miễn sao dân no ấm và phát triển.", textEn: "No ideology is perfect. A good government flexibly patches together any policy as long as the people are prosperous.", effects: { political: 0.5, diplomatic: 0 } }, 
+          
+          // (DỊCH MẪU ĐẾN ĐÂY. CÁC CÂU DƯỚI TÔI TẠM ĐỂ GIỐNG TEXT TIẾNG VIỆT ĐỂ BẠN DỊCH SAU. BẠN CHỈ CẦN SỬA PHẦN textEn CỦA TỪNG DÒNG)
+          { text: "Một quốc gia cần hiện đại hóa và thế tục hóa triệt để, thậm chí dùng quân đội ép dân từ bỏ tôn giáo để tiến bộ.", textEn: "A nation needs radical modernization and secularization, even using the army to force citizens to abandon religion for progress.", effects: { power: 1, religious: -1.5, cultural: -1 } }, 
+          { text: "Để giải quyết nghèo đói, thay vì chờ nhà nước phát phúc lợi, ta nên để các tổ chức tôn giáo và hội thiện nguyện tư nhân lo liệu.", textEn: "To solve poverty, instead of waiting for state welfare, we should let religious organizations and private charities handle it.", effects: { economic: 1, religious: 1.5, power: -0.5 } }, 
+          { text: "Môi trường công sở cũng phải áp dụng dân chủ: Nhân viên có quyền biểu quyết sa thải giám đốc và quyết định chiến lược công ty.", textEn: "Workplaces must also apply democracy: Employees have the right to vote to fire the CEO and decide company strategy.", effects: { political: -1.5, economic: -1 } }, 
+          { text: "Luật pháp do con người tạo ra là sự kiêu ngạo; con người chỉ nên sống tự do và phục tùng duy nhất các phán quyết của Thượng Đế.", textEn: "Man-made laws are arrogant; humans should live freely and submit only to the judgments of God.", effects: { power: -1.5, civil: -1, religious: 2 } }, 
+          { text: "Nhà nước nên hỗ trợ các tập đoàn công nghệ lớn thu thập dữ liệu sinh trắc học của mọi công dân để loại bỏ hoàn toàn mầm mống tội phạm.", textEn: "The state should support big tech in collecting biometric data of all citizens to completely eliminate the seeds of crime.", effects: { power: 1.5, civil: 2, cultural: -0.5 } }, 
+          { text: "Nền dân chủ bầu cử là tốt, nhưng quốc hội tuyệt đối không được phép thông qua bất kỳ luật nào trái với giáo lý của tôn giáo đa số.", textEn: "Electoral democracy is good, but parliament must absolutely not pass any law contrary to the dogma of the majority religion.", effects: { political: -0.5, civil: 1, religious: 2, cultural: 1.5 } }, 
+          { text: "Tự do cá nhân và kinh tế mở là tuyệt vời, nhưng ta phải đóng chặt biên giới lại để bảo vệ dân tộc khỏi văn hóa ngoại lai.", textEn: "Individual freedom and open economies are great, but we must seal the borders to protect the nation from foreign culture.", effects: { economic: 1, diplomatic: 1.5, societal: 1.5, civil: -0.5 } }, 
+          { text: "Chủ nghĩa tư bản tàn phá Trái Đất vì lợi nhuận; chỉ có một chính quyền trung ương tịch thu và kế hoạch hóa kinh tế mới cứu được tự nhiên.", textEn: "Capitalism destroys Earth for profit; only a central authority confiscating and planning the economy can save nature.", effects: { economic: -2, power: 1 } }, 
+          { text: "Các công ty tư nhân lớn nên tự lo nhà ở, trường học, bệnh viện cho nhân viên của mình để họ không cần dựa dẫm vào chính phủ hay công đoàn.", textEn: "Large private companies should provide housing, schools, and hospitals for their employees so they don't rely on gov or unions.", effects: { economic: 1.5, power: 0.5 } }, 
+          { text: "Cá nhân tự do là tốt, nhưng sự ràng buộc về nghĩa vụ chăm sóc gia đình, họ hàng và cộng đồng địa phương quan trọng hơn tham vọng cá nhân.", textEn: "Individual freedom is good, but the obligation to care for family, relatives, and local community is more important than personal ambition.", effects: { civil: 1, cultural: 1, societal: 1 } }, 
+          { text: "Sự phát triển của AI đang hủy hoại bản chất con người; ta nên quay về lối sống đơn giản, bài trừ công nghệ.", textEn: "AI development is destroying human nature; we should return to a simple lifestyle and reject technology.", effects: { cultural: 1, economic: -0.5 } },
+          { text: "Đất đai thuộc về tự nhiên; ai chiếm hữu nó để sinh lời phải trả một khoản thuế đất cực cao cho xã hội.", textEn: "Land belongs to nature; anyone who occupies it for profit must pay an extremely high land tax to society.", effects: { economic: -0.5, power: 0.5 } },
+          { text: "Chính phủ cánh tả phải ưu tiên bảo vệ công nhân trong nước trước, không nên lo chuyện bao đồng quốc tế.", textEn: "A left-wing government must prioritize protecting domestic workers first, not meddling in international affairs.", effects: { diplomatic: 1, economic: -1 } },
+          { text: "Xã hội vận hành theo quy luật sinh tồn: kẻ yếu kém nghèo đói phải bị đào thải để nhường chỗ cho người xuất sắc.", textEn: "Society operates on survival of the fittest: the weak and poor must be eliminated to make way for the excellent.", effects: { economic: 1, cultural: 1, societal: 1 } },
+          { text: "Khái niệm 'Công dân toàn cầu' cao quý hơn bất kỳ lòng tự hào dân tộc hay tình yêu tổ quốc hạn hẹp nào.", textEn: "The concept of a 'Global Citizen' is nobler than any narrow national pride or patriotism.", effects: { diplomatic: -1.5, societal: -1 } },
+          { text: "Cấu trúc gia đình và vai trò giới tính hiện tại là hệ thống bóc lột của chế độ phụ quyền cần phải bị đập bỏ.", textEn: "The current family structure and gender roles are an exploitative system of patriarchy that must be smashed.", effects: { cultural: -1.5, societal: -1 } },
+          { text: "Chính phủ nên kiểm duyệt internet để ngăn chặn các tư tưởng thù địch và bảo vệ an ninh quốc gia.", textEn: "The government should censor the internet to prevent hostile ideologies and protect national security.", effects: { civil: 1, cultural: 1, political: 1 } },
+          { text: "Các tập đoàn đa quốc gia có quá nhiều quyền lực và cần bị tháo dỡ để bảo vệ người lao động địa phương.", textEn: "Multinational corporations have too much power and need to be dismantled to protect local workers.", effects: { economic: -1, diplomatic: 1, power: -0.5 } },
+          { text: "Nhà nước nên hỗ trợ tài chính cho các tổ chức tôn giáo vì họ làm công tác xã hội và từ thiện rất tốt.", textEn: "The state should financially support religious organizations because they do great social and charity work.", effects: { religious: 1, economic: 1 } },
+          { text: "Chúng ta phải chấp nhận giảm tăng trưởng kinh tế, thậm chí can thiệp thị trường, để bảo vệ môi trường.", textEn: "We must accept reduced economic growth, even market intervention, to protect the environment.", effects: { economic: -1, cultural: -1 } },
+          { text: "Nghĩa vụ quân sự bắt buộc là cần thiết để rèn luyện thanh niên thành những công dân có kỷ luật.", textEn: "Mandatory military service is necessary to train youth into disciplined citizens.", effects: { military: 1, societal: 1, cultural: 1 } },
+          { text: "Mở cửa biên giới tự do cho lao động nhập cư sẽ làm kinh tế thịnh vượng và văn hóa phong phú hơn.", textEn: "Opening borders freely to immigrant labor will make the economy prosperous and culture richer.", effects: { diplomatic: -1, societal: -1, economic: 1 } },
+          { text: "Cá nhân có toàn quyền quyết định về cơ thể mình (kể cả quyền an tử) mà không cần nhà nước can thiệp.", textEn: "Individuals have absolute right over their own bodies (including euthanasia) without state intervention.", effects: { civil: -1, cultural: -1, religious: -1 } },
+          { text: "Không một tổ chức, chính quyền hay tập thể nào có quyền áp đặt luật lệ lên sự tự quyết của cá nhân.", textEn: "No organization, government, or collective has the right to impose rules on individual self-determination.", effects: { power: -1, civil: -0.5 } },
+          { text: "Thị trường tự do, nếu không có sự can thiệp của nhà nước, sẽ tự điều chỉnh và mang lại sự giàu có cho tất cả.", textEn: "A free market, without state intervention, will self-regulate and bring wealth to all.", effects: { economic: 1 } },
+          { text: "Tôn giáo là việc cá nhân và hoàn toàn không nên có mặt trong bất kỳ hệ thống giáo dục hay luật pháp nào.", textEn: "Religion is a personal matter and should absolutely not be present in any education or legal system.", effects: { religious: -1 } },
+          { text: "Người dân nên được bỏ phiếu trực tiếp cho các chính sách quan trọng, thay vì giao phó cho các chính trị gia.", textEn: "Citizens should vote directly on important policies, rather than entrusting them to politicians.", effects: { political: -1 } },
+          { text: "Lợi ích và chủ quyền quốc gia phải luôn được đặt lên trên các hiệp ước hợp tác hay tổ chức quốc tế.", textEn: "National interests and sovereignty must always be placed above cooperative treaties or international organizations.", effects: { diplomatic: 1 } },
+          { text: "Chính phủ không bao giờ được phép thu thập dữ liệu riêng tư của người dân, dù lý do là gì.", textEn: "The government must never be allowed to collect citizens' private data, regardless of the reason.", effects: { civil: -1 } },
+          { text: "Tôi hoàn toàn ủng hộ các quyền lợi của cộng đồng LGBTQ+, bao gồm cả quyền sử dụng nhà vệ sinh đa giới.", textEn: "I fully support the rights of the LGBTQ+ community, including the right to use gender-neutral restrooms.", effects: { cultural: -1 } },
+          { text: "Một lực lượng quân đội hùng mạnh, áp đảo là cách duy nhất để quốc gia không bị bắt nạt.", textEn: "An overwhelmingly powerful military is the only way for a nation not to be bullied.", effects: { military: 1 } },
+          { text: "Người nhập cư không cần phải từ bỏ bản sắc văn hóa gốc của họ khi đến sống ở một đất nước mới.", textEn: "Immigrants do not need to give up their original cultural identity when living in a new country.", effects: { societal: -1 } },
+          { text: "Trong thời kỳ khủng hoảng, một nhà lãnh đạo có quyền lực tuyệt đối là cần thiết để duy trì trật tự.", textEn: "In times of crisis, a leader with absolute power is necessary to maintain order.", effects: { power: 1, political: 1 } },
+          { text: "Chính phủ cần đánh thuế nặng người giàu để cung cấp y tế và giáo dục miễn phí cho người nghèo.", textEn: "The government needs to heavily tax the rich to provide free healthcare and education for the poor.", effects: { economic: -1 } },
+          { text: "Các cơ sở tôn giáo (nhà thờ, đền chùa) phải nộp thuế đầy đủ như mọi doanh nghiệp kinh doanh khác.", textEn: "Religious institutions (churches, temples) must pay full taxes like any other business.", effects: { religious: -1, economic: -0.5 } },
+          { text: "Chế độ nhiều đảng phái chỉ gây ra sự tranh cãi mệt mỏi và làm chậm quá trình phát triển đất nước.", textEn: "A multi-party system only causes exhausting arguments and slows down the country's development.", effects: { political: 1 } },
+          { text: "Thế giới sẽ tốt đẹp hơn nếu chúng ta xóa bỏ biên giới và hướng tới một cộng đồng toàn cầu.", textEn: "The world would be better if we abolished borders and moved towards a global community.", effects: { diplomatic: -1 } },
+          { text: "Việc lắp đặt camera giám sát ở mọi nơi công cộng là cái giá xứng đáng để không còn tội phạm.", textEn: "Installing surveillance cameras in all public places is a worthy price for having zero crime.", effects: { civil: 1 } },
+          { text: "Sự suy đồi đạo đức hiện nay bắt nguồn từ việc chúng ta từ bỏ các giá trị gia đình truyền thống.", textEn: "Current moral decay stems from us abandoning traditional family values.", effects: { cultural: 1 } },
+          { text: "Chúng ta nên cắt giảm triệt để ngân sách quân sự để chuyển vốn sang các vấn đề dân sinh.", textEn: "We should radically cut the military budget to divert funds to civilian issues.", effects: { military: -1 } },
+          { text: "Mọi công dân trong nước bắt buộc phải giao tiếp bằng một ngôn ngữ quốc gia duy nhất ở nơi công cộng.", textEn: "All citizens in the country must be forced to communicate in a single national language in public.", effects: { societal: 1 } },
+          { text: "Mọi hình thức nhà nước và pháp luật thực chất chỉ là công cụ để tước đoạt tự do; con người nên tương tác tự nguyện.", textEn: "All forms of state and law are essentially tools to strip freedom; humans should interact voluntarily.", effects: { power: -1, cultural: -0.5 } },
+          { text: "Các dịch vụ mang tính sống còn như y tế và giáo dục tuyệt đối không nên được vận hành vì lợi nhuận.", textEn: "Vital services like healthcare and education should absolutely not be operated for profit.", effects: { economic: -1 } },
+          { text: "Nên có các buổi giảng dạy về giáo lý cơ bản hoặc thời gian cầu nguyện trong các trường học công lập.", textEn: "There should be basic religious teachings or prayer time in public schools.", effects: { religious: 1 } },
+          { text: "Cần áp dụng các rào cản thuế quan mạnh mẽ để chặn hàng ngoại nhập, bảo vệ nền sản xuất nội địa.", textEn: "Strong tariff barriers must be applied to block imports and protect domestic manufacturing.", effects: { diplomatic: 1, economic: -0.5 } },
+          { text: "Người tiết lộ bí mật quốc gia để vạch trần sai phạm của chính quyền (whistleblower) là anh hùng.", textEn: "A person who reveals national secrets to expose government wrongdoing (whistleblower) is a hero.", effects: { civil: -1, power: -0.5 } },
+          { text: "Các chuẩn mực đạo đức cũ kỹ chỉ là sản phẩm do con người tự tạo ra, chúng cần bị phá bỏ.", textEn: "Old moral standards are mere man-made products, they need to be destroyed.", effects: { cultural: -1, religious: -0.5 } },
+          { text: "Can thiệp quân sự vào lãnh thổ nước khác hiếm khi mang lại hòa bình mà chỉ gây thêm thù hận.", textEn: "Military intervention in other countries' territories rarely brings peace and only causes more hatred.", effects: { military: -1 } },
+          { text: "Sự đa dạng về sắc tộc và văn hóa là sức mạnh cốt lõi làm cho một cộng đồng trở nên vĩ đại.", textEn: "Ethnic and cultural diversity is the core strength that makes a community great.", effects: { societal: -1 } },
+          { text: "Một chính quyền trung ương mạnh là cần thiết để quy hoạch hạ tầng và phát triển đồng bộ toàn quốc.", textEn: "A strong central government is necessary for nationwide infrastructure planning and synchronized development.", effects: { power: 1 } }
         ];
 
+        // Tùy chọn Trả lời
         const options = [
-          { label: "Rất đồng tình", value: 2 },
-          { label: "Đồng tình", value: 1 },
-          { label: "Trung lập", value: 0 },
-          { label: "Phản đối", value: -1 },
-          { label: "Rất phản đối", value: -2 }
+          { label: "Rất đồng tình", labelEn: "Strongly Agree", value: 2 },
+          { label: "Đồng tình", labelEn: "Agree", value: 1 },
+          { label: "Trung lập", labelEn: "Neutral", value: 0 },
+          { label: "Phản đối", labelEn: "Disagree", value: -1 },
+          { label: "Rất phản đối", labelEn: "Strongly Disagree", value: -2 }
         ];
 
         function shuffleArray(array) {
@@ -254,7 +340,7 @@
           return shuffled;
         }
 
-        const RadarChart = ({ results, axes }) => {
+        const RadarChart = ({ results, axes, lang, t }) => {
           const size = 320;
           const center = size / 2;
           const radius = size / 2 - 40; 
@@ -288,7 +374,11 @@
 
           const labels = axes.map((axis, idx) => {
             const score = results[axis.id];
-            const labelText = score > 0 ? axis.right : (score < 0 ? axis.left : "Cân bằng");
+            
+            // Xử lý đa ngôn ngữ cho nhãn trên Radar
+            const rightText = lang === 'vi' ? axis.right : axis.rightEn;
+            const leftText = lang === 'vi' ? axis.left : axis.leftEn;
+            const labelText = score > 0 ? rightText : (score < 0 ? leftText : t.balanced);
             const isStrong = Math.abs(score) >= 5;
             
             const angle = idx * angleStep - Math.PI / 2;
@@ -318,6 +408,10 @@
         };
 
         function App() {
+          // STATE MỚI ĐỂ CHUYỂN NGÔN NGỮ
+          const [lang, setLang] = useState('vi');
+          const t = tUI[lang]; // Lấy dictionary theo ngôn ngữ hiện tại
+
           const [currentQuestion, setCurrentQuestion] = useState(0);
           const [answers, setAnswers] = useState({});
           const [showResults, setShowResults] = useState(false);
@@ -336,6 +430,10 @@
           const [secretCode, setSecretCode] = useState("");
 
           const questions = useMemo(() => shuffleArray(rawQuestions), []);
+
+          const toggleLang = () => {
+              setLang(lang === 'vi' ? 'en' : 'vi');
+          };
 
           const resetQuiz = () => {
             setAnswers({});
@@ -419,12 +517,15 @@
 
             const userScores = calculateScores();
             const topMatch = findClosestIdeologies(userScores)[0];
+            
+            // LUÔN LUÔN SỬ DỤNG TÊN TIẾNG VIỆT LÀM KEY DATABASE ĐỂ KHÔNG BỊ CHIA CẮT STATS
+            const standardDBName = topMatch.name; 
 
             if (db) {
                 try {
                     const newRecordRef = db.ref('results').push();
                     await newRecordRef.set({
-                        ideology: topMatch.name,
+                        ideology: standardDBName,
                         scores: userScores,
                         timestamp: firebase.database.ServerValue.TIMESTAMP
                     });
@@ -432,10 +533,10 @@
                     const statsRef = db.ref('stats/ideologies');
                     statsRef.transaction((currentData) => {
                         if (currentData === null) {
-                            return { totalVotes: 1, [topMatch.name]: 1 };
+                            return { totalVotes: 1, [standardDBName]: 1 };
                         } else {
                             currentData.totalVotes = (currentData.totalVotes || 0) + 1;
-                            currentData[topMatch.name] = (currentData[topMatch.name] || 0) + 1;
+                            currentData[standardDBName] = (currentData[standardDBName] || 0) + 1;
                             return currentData;
                         }
                     }, (error, committed, snapshot) => {
@@ -444,7 +545,7 @@
                             setStats({ totalVotes: 0, currentIdeoVotes: 0, error: true });
                         } else if (committed) {
                             const newData = snapshot.val();
-                            setStats({ totalVotes: newData.totalVotes, currentIdeoVotes: newData[topMatch.name] });
+                            setStats({ totalVotes: newData.totalVotes, currentIdeoVotes: newData[standardDBName] });
                         }
                         setIsSaving(false);
                     });
@@ -455,7 +556,7 @@
                 }
             } else {
                 setIsSaving(false);
-                setStats({ totalVotes: 0, currentIdeoVotes: 0, error: "Chưa cấu hình Firebase" });
+                setStats({ totalVotes: 0, currentIdeoVotes: 0, error: t.notConfigured });
             }
           };
 
@@ -479,18 +580,35 @@
              }
           };
 
+          // NÚT CHUYỂN NGÔN NGỮ CHUNG (Được gắn ở góc)
+          const LangToggle = () => (
+             <div className="absolute top-4 right-4 md:top-6 md:right-6">
+                <button 
+                   onClick={toggleLang}
+                   className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-full text-xs shadow-sm transition-colors border border-slate-200"
+                >
+                   <span>🇻🇳 VI</span>
+                   <div className={`w-6 h-3 bg-slate-300 rounded-full relative flex items-center p-0.5 transition-all ${lang==='en' ? 'bg-indigo-300' : ''}`}>
+                      <div className={`w-2.5 h-2.5 bg-white rounded-full shadow-sm transition-all ${lang==='en' ? 'translate-x-3' : ''}`}></div>
+                   </div>
+                   <span>🇬🇧 EN</span>
+                </button>
+             </div>
+          );
+
           if (!hasStarted) {
              return (
-                <div className="max-w-3xl mx-auto mt-16 p-8 bg-white rounded-[2.5rem] shadow-2xl text-center border border-slate-100">
-                    <div className="inline-block px-5 py-2 bg-slate-900 text-white rounded-full text-xs font-bold uppercase tracking-widest mb-6 shadow-md shadow-slate-900/20">
-                      TÌM HIỂU VỀ XU HƯỚNG CHÍNH TRỊ BẢN THÂN
+                <div className="max-w-3xl mx-auto mt-16 p-8 bg-white rounded-[2.5rem] shadow-2xl text-center border border-slate-100 relative">
+                    <LangToggle />
+                    <div className="inline-block px-5 py-2 bg-slate-900 text-white rounded-full text-xs font-bold uppercase tracking-widest mb-6 shadow-md mt-6">
+                      {t.subtitle}
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black mb-6 text-slate-800 tracking-tight leading-tight">Bài Test 111 <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Tư tưởng Chính trị</span></h1>
+                    <h1 className="text-4xl md:text-5xl font-black mb-6 text-slate-800 tracking-tight leading-tight">{t.title1} <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">{t.title2}</span></h1>
                     
                     <p className="text-lg text-slate-600 mb-10 mt-2 leading-relaxed px-4">
-                       Làm 60 câu hỏi phân bổ chéo để tìm ra tư tưởng khớp với bạn từ tận 111 hệ tư tưởng. Dựa trên mô hình 9 trục tọa độ yếu tố.
+                       {t.desc}
                     </p>
-                    <button onClick={() => setHasStarted(true)} className="px-12 py-5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xl font-bold rounded-2xl shadow-xl shadow-teal-500/30 hover:shadow-teal-500/50 transition-all hover:-translate-y-1 active:translate-y-0">Bắt đầu Trắc nghiệm</button>
+                    <button onClick={() => setHasStarted(true)} className="px-12 py-5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xl font-bold rounded-2xl shadow-xl shadow-teal-500/30 hover:shadow-teal-500/50 transition-all hover:-translate-y-1 active:translate-y-0">{t.startBtn}</button>
                 </div>
              );
           }
@@ -501,10 +619,15 @@
             const topMatch = sortedIdeologies[0];
             const runnerUps = sortedIdeologies.slice(1, 4); 
 
+            // Lấy tên theo ngôn ngữ đang chọn
+            const topMatchName = lang === 'vi' ? topMatch.name : (topMatch.nameEn || topMatch.name);
+            const topMatchDesc = lang === 'vi' ? topMatch.description : (topMatch.descriptionEn || topMatch.description);
+
             return (
-              <div className="max-w-6xl mx-auto p-4 md:p-8 bg-slate-50 min-h-screen">
-                <h1 className="text-3xl md:text-4xl font-extrabold mb-3 text-center text-slate-900">Báo Cáo Tọa Độ Tư Tưởng</h1>
-                <p className="text-center mb-10 text-slate-500 font-medium">Đối chiếu đa chiều với 111 Hệ tư tưởng trên toàn thế giới</p>
+              <div className="max-w-6xl mx-auto p-4 md:p-8 bg-slate-50 min-h-screen relative">
+                <LangToggle />
+                <h1 className="text-3xl md:text-4xl font-extrabold mb-3 text-center text-slate-900 mt-6 md:mt-0">{t.reportTitle}</h1>
+                <p className="text-center mb-10 text-slate-500 font-medium">{t.reportDesc}</p>
                 
                 {/* TOP 1 MATCH */}
                 <div className="bg-slate-900 text-white p-8 md:p-12 rounded-[2rem] mb-6 shadow-2xl relative overflow-hidden border border-slate-800">
@@ -514,37 +637,36 @@
                   <div className="relative z-10 flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-4 mb-4">
-                         <span className="text-emerald-400 font-bold tracking-widest uppercase text-sm">Hệ tư tưởng khớp nhất</span>
+                         <span className="text-emerald-400 font-bold tracking-widest uppercase text-sm">{t.bestMatch}</span>
                          <span className="text-xs bg-emerald-900/50 px-3 py-1.5 rounded-full text-emerald-400 font-bold shadow-inner border border-emerald-500/30">
-                            Độ tương thích: {topMatch.matchPercentage}%
+                            {t.matchRate} {topMatch.matchPercentage.toFixed(1)}%
                          </span>
                       </div>
-                      <h2 className="text-4xl md:text-5xl font-black mb-5 text-white tracking-tight">{topMatch.name}</h2>
-                      <p className="text-slate-300 leading-relaxed text-lg lg:text-xl max-w-3xl">{topMatch.description}</p>
+                      <h2 className="text-4xl md:text-5xl font-black mb-5 text-white tracking-tight">{topMatchName}</h2>
+                      <p className="text-slate-300 leading-relaxed text-lg lg:text-xl max-w-3xl">{topMatchDesc}</p>
                     </div>
                   </div>
                 </div>
 
-                {/* THỐNG KÊ ĐÁM MÂY (FIREBASE REAL DATA) */}
+                {/* THỐNG KÊ ĐÁM MÂY */}
                 <div className="mb-10 bg-indigo-50 border border-indigo-100 p-5 rounded-2xl flex items-center gap-4 shadow-sm animate-in fade-in duration-500">
                     <div className="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center text-white shrink-0 shadow-inner">
                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
                     </div>
                     <div>
-                       <h4 className="font-bold text-indigo-900">Thống kê Cộng đồng</h4>
+                       <h4 className="font-bold text-indigo-900">{t.cloudStats}</h4>
                        {isSaving ? (
-                          <p className="text-indigo-700 text-sm mt-1 animate-pulse">Đang đồng bộ dữ liệu với Cloud...</p>
+                          <p className="text-indigo-700 text-sm mt-1 animate-pulse">{t.syncing}</p>
                        ) : stats.error ? (
-                          <p className="text-red-600 text-sm mt-1">Chưa thể lưu. Cần dán mã config của Realtime Database vào file HTML.</p>
+                          <p className="text-red-600 text-sm mt-1">{t.notConfigured}</p>
                        ) : (
                           stats.totalVotes < 5 ? (
                              <p className="text-indigo-700 text-sm mt-1">
-                                Hệ thống đang thu thập dữ liệu (Hiện có: <strong>{stats.totalVotes} lượt</strong> làm bài). 
-                                Cần tối thiểu 5 lượt để phân tích % hệ tư tưởng.
+                                {t.collecting}<strong>{stats.totalVotes}</strong>{t.collecting2}
                              </p>
                           ) : (
                              <p className="text-indigo-700 text-sm mt-1">
-                                Trong tổng số <strong>{stats.totalVotes}</strong> người đã làm bài, có <strong>{stats.currentIdeoVotes}</strong> người chia sẻ tư tưởng <strong>{topMatch.name}</strong> giống bạn (Chiếm tỉ lệ <strong>{((stats.currentIdeoVotes / stats.totalVotes) * 100).toFixed(1)}%</strong>).
+                                {t.stat1}<strong>{stats.totalVotes}</strong>{t.stat2}<strong>{stats.currentIdeoVotes}</strong>{t.stat3}<strong>{((stats.currentIdeoVotes / stats.totalVotes) * 100).toFixed(1)}%</strong>).
                              </p>
                           )
                        )}
@@ -557,27 +679,31 @@
                    <div className="w-full lg:w-1/3 flex flex-col gap-6">
                       <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-200 flex flex-col">
                          <div className="text-center mb-4">
-                            <h3 className="text-lg font-bold text-slate-800">Biểu đồ Cường độ Nhận thức</h3>
+                            <h3 className="text-lg font-bold text-slate-800">{t.radarTitle}</h3>
                             <p className="text-[11px] text-slate-400 mt-1 uppercase tracking-widest font-bold">
-                              Tâm = Trung Lập | Viền = Cực Đoan
+                              {t.radarSub}
                             </p>
                          </div>
-                         <RadarChart results={results} axes={axes} />
+                         <RadarChart results={results} axes={axes} lang={lang} t={t} />
                       </div>
 
                       <div className="bg-transparent mt-2">
-                         <h3 className="text-sm font-bold text-slate-500 mb-4 px-2 uppercase tracking-widest">Sự pha trộn lân cận</h3>
+                         <h3 className="text-sm font-bold text-slate-500 mb-4 px-2 uppercase tracking-widest">{t.runnerUps}</h3>
                          <div className="flex flex-col gap-4">
                            {runnerUps.map((ideo, idx) => (
                               <div key={idx} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md hover:border-emerald-300 transition-all group">
                                  <div className="flex justify-between items-center mb-2">
-                                    <span className="text-[11px] font-bold bg-emerald-50 text-emerald-600 px-2 py-1 rounded">Khớp thứ {idx + 2}</span>
+                                    <span className="text-[11px] font-bold bg-emerald-50 text-emerald-600 px-2 py-1 rounded">{t.matchRank} {idx + 2}</span>
                                     <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
-                                       {ideo.matchPercentage}%
+                                       {ideo.matchPercentage.toFixed(1)}%
                                     </span>
                                  </div>
-                                 <h4 className="font-bold text-slate-800 mb-2 leading-tight text-[15px] group-hover:text-emerald-600 transition-colors">{ideo.name}</h4>
-                                 <p className="text-[13px] text-slate-500 leading-relaxed line-clamp-3">{ideo.description}</p>
+                                 <h4 className="font-bold text-slate-800 mb-2 leading-tight text-[15px] group-hover:text-emerald-600 transition-colors">
+                                    {lang === 'vi' ? ideo.name : (ideo.nameEn || ideo.name)}
+                                 </h4>
+                                 <p className="text-[13px] text-slate-500 leading-relaxed line-clamp-3">
+                                    {lang === 'vi' ? ideo.description : (ideo.descriptionEn || ideo.description)}
+                                 </p>
                               </div>
                            ))}
                          </div>
@@ -587,7 +713,7 @@
                    {/* CỘT PHẢI: CHI TIẾT 9 TRỤC */}
                    <div className="w-full lg:w-2/3">
                       <div className="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-200 h-full">
-                         <h3 className="text-xl font-bold text-slate-800 mb-8 px-2 border-b border-slate-100 pb-4">Phân tích Tọa độ 9 Trục chi tiết</h3>
+                         <h3 className="text-xl font-bold text-slate-800 mb-8 px-2 border-b border-slate-100 pb-4">{t.axesDetail}</h3>
                          
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-7">
                             {axes.map(axis => {
@@ -601,21 +727,25 @@
                                     className="flex justify-between items-end mb-3 cursor-pointer group"
                                     onClick={() => setExpandedAxis(isExpanded ? null : axis.id)}
                                   >
-                                    <span className={`text-[13px] font-bold w-[35%] text-left transition-colors ${score < 0 ? 'text-slate-900 group-hover:text-emerald-600' : 'text-slate-400 group-hover:text-slate-600'}`}>{axis.left}</span>
+                                    <span className={`text-[13px] font-bold w-[35%] text-left transition-colors ${score < 0 ? 'text-slate-900 group-hover:text-emerald-600' : 'text-slate-400 group-hover:text-slate-600'}`}>
+                                       {lang === 'vi' ? axis.left : axis.leftEn}
+                                    </span>
                                     
                                     <div className="w-[30%] flex flex-col items-center justify-center">
                                        <span className="text-[10px] tracking-widest uppercase text-slate-500 font-extrabold bg-slate-50 px-3 py-1 rounded-lg text-center border border-slate-100 group-hover:bg-slate-200 transition-colors flex items-center gap-1">
-                                          {axis.name}
+                                          {lang === 'vi' ? axis.name : axis.nameEn}
                                           <svg className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                                        </span>
                                     </div>
 
-                                    <span className={`text-[13px] font-bold w-[35%] text-right transition-colors ${score > 0 ? 'text-slate-900 group-hover:text-emerald-600' : 'text-slate-400 group-hover:text-slate-600'}`}>{axis.right}</span>
+                                    <span className={`text-[13px] font-bold w-[35%] text-right transition-colors ${score > 0 ? 'text-slate-900 group-hover:text-emerald-600' : 'text-slate-400 group-hover:text-slate-600'}`}>
+                                       {lang === 'vi' ? axis.right : axis.rightEn}
+                                    </span>
                                   </div>
                                   
                                   {isExpanded && (
                                     <div className="mb-4 p-3 bg-slate-800 text-slate-200 text-xs rounded-xl shadow-inner animate-in fade-in slide-in-from-top-2 duration-200 leading-relaxed font-medium">
-                                      {axis.description}
+                                      {lang === 'vi' ? axis.description : axis.descriptionEn}
                                     </div>
                                   )}
                                   
@@ -647,14 +777,14 @@
                      onClick={() => setShowAllIdeologies(true)}
                      className="px-8 py-4 bg-white border-2 border-slate-200 text-slate-700 font-bold rounded-2xl hover:bg-slate-50 hover:border-emerald-400 transition-all text-sm shadow-sm w-full md:w-auto"
                    >
-                     Mở Bách khoa toàn thư (Tìm kiếm 111 Tư tưởng)
+                     {t.openLib}
                    </button>
                    
                    <button 
                      onClick={resetQuiz}
                      className="px-8 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all text-sm shadow-lg hover:shadow-xl w-full md:w-auto active:scale-95"
                    >
-                     ↻ Làm lại bài test
+                     {t.retry}
                    </button>
                 </div>
 
@@ -666,12 +796,12 @@
                      <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col relative z-10 overflow-hidden animate-in zoom-in-95 duration-200">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center p-6 md:px-8 border-b border-slate-100 bg-slate-50 gap-4">
                            <div>
-                             <h3 className="text-2xl font-black text-slate-800">Thư viện 111 Tư tưởng Chính trị</h3>
+                             <h3 className="text-2xl font-black text-slate-800">{t.libTitle}</h3>
                            </div>
                            <div className="flex items-center gap-3 w-full md:w-auto">
                              <input 
                                type="text" 
-                               placeholder="Tìm kiếm tư tưởng..." 
+                               placeholder={t.searchPH} 
                                value={searchTerm}
                                onChange={(e) => setSearchTerm(e.target.value)}
                                className="px-4 py-2 border border-slate-300 rounded-lg text-sm w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -684,9 +814,14 @@
                         
                         <div className="p-6 md:p-8 overflow-y-auto flex-1 bg-slate-50/50">
                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                              {ideologies.filter(ideo => ideo.name.toLowerCase().includes(searchTerm.toLowerCase())).map((ideo, i) => {
+                              {ideologies.filter(ideo => {
+                                  const nameToCheck = lang === 'vi' ? ideo.name : (ideo.nameEn || ideo.name);
+                                  return nameToCheck.toLowerCase().includes(searchTerm.toLowerCase());
+                              }).map((ideo, i) => {
                                  const isExpanded = expandedIdeo === ideo.name;
                                  const matchPct = calculateMatchPercentage(ideo, results);
+                                 const iName = lang === 'vi' ? ideo.name : (ideo.nameEn || ideo.name);
+                                 const iDesc = lang === 'vi' ? ideo.description : (ideo.descriptionEn || ideo.description);
                                  
                                  return (
                                    <div 
@@ -696,7 +831,7 @@
                                       onClick={() => setExpandedIdeo(isExpanded ? null : ideo.name)}
                                    >
                                       <div className="flex justify-between items-center">
-                                         <h4 className={`font-bold text-[15px] pr-2 ${isExpanded ? 'text-emerald-700' : 'text-slate-800'}`}>{ideo.name}</h4>
+                                         <h4 className={`font-bold text-[15px] pr-2 ${isExpanded ? 'text-emerald-700' : 'text-slate-800'}`}>{iName}</h4>
                                          <span className={`text-xl leading-none w-6 h-6 flex-shrink-0 flex items-center justify-center rounded-full transition-colors ${isExpanded ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-400'}`}>
                                             {isExpanded ? '−' : '+'}
                                          </span>
@@ -704,25 +839,30 @@
                                       
                                       {isExpanded && (
                                         <div className="mt-4 animate-in fade-in duration-200 border-t border-slate-100 pt-4 cursor-default" onClick={(e) => e.stopPropagation()}>
-                                          <p className="text-[13px] text-slate-600 leading-relaxed font-medium mb-4">{ideo.description}</p>
+                                          <p className="text-[13px] text-slate-600 leading-relaxed font-medium mb-4">{iDesc}</p>
                                           
                                           <div className="mb-3 flex items-center gap-2">
-                                             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Độ tương thích của bạn:</span>
+                                             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">{t.matchRate}</span>
                                              <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-xs font-bold border border-emerald-200">
-                                               Khớp {matchPct}%
+                                               {matchPct}%
                                              </span>
                                           </div>
 
                                           <div className="flex flex-wrap gap-1.5 mt-2">
-                                            <span className="w-full text-[10px] uppercase font-bold text-slate-400 mb-1 tracking-wider">Chỉ số tọa độ lý thuyết:</span>
+                                            <span className="w-full text-[10px] uppercase font-bold text-slate-400 mb-1 tracking-wider">{t.theoryCoords}</span>
                                             {Object.entries(ideo.stats).map(([key, val]) => {
                                               const axis = axes.find(a => a.id === key);
                                               if (!axis) return null;
                                               const colorClass = val > 0 ? "bg-red-50 text-red-700 border-red-100" : (val < 0 ? "bg-blue-50 text-blue-700 border-blue-100" : "bg-slate-100 text-slate-600 border-slate-200");
-                                              const label = val > 0 ? axis.right : (val < 0 ? axis.left : "Cân bằng");
+                                              
+                                              const rightText = lang === 'vi' ? axis.right : axis.rightEn;
+                                              const leftText = lang === 'vi' ? axis.left : axis.leftEn;
+                                              const axisName = lang === 'vi' ? axis.name : axis.nameEn;
+                                              const label = val > 0 ? rightText : (val < 0 ? leftText : t.balanced);
+
                                               return (
                                                 <span key={key} className={`text-[10px] px-2 py-1 rounded border font-medium ${colorClass}`}>
-                                                  <strong className="uppercase mr-1">{axis.name}:</strong> {val > 0 ? '+'+val : val} ({label})
+                                                  <strong className="uppercase mr-1">{axisName}:</strong> {val > 0 ? '+'+val : val} ({label})
                                                 </span>
                                               );
                                             })}
@@ -732,38 +872,31 @@
                                    </div>
                                  );
                               })}
-                              
-                              {ideologies.filter(ideo => ideo.name.toLowerCase().includes(searchTerm.toLowerCase())).length === 0 && (
-                                 <div className="col-span-full text-center py-10 text-slate-500">
-                                    Không tìm thấy hệ tư tưởng nào khớp với từ khóa "{searchTerm}".
-                                 </div>
-                              )}
                            </div>
                         </div>
                      </div>
                   </div>
                 )}
 
-                {/* KHU VỰC DÀNH CHO ADMIN (MÃ BÍ MẬT) */}
+                {/* KHU VỰC DÀNH CHO ADMIN */}
                 <div className="mt-20 border-t border-slate-200 pt-8 max-w-sm mx-auto">
-                    <h3 className="text-sm font-bold text-slate-400 text-center mb-4 uppercase tracking-widest">Khu vực Admin</h3>
+                    <h3 className="text-sm font-bold text-slate-400 text-center mb-4 uppercase tracking-widest">{t.adminArea}</h3>
                     {!showGodMode ? (
                         <div className="flex gap-2">
-                           <input type="password" value={secretCode} onChange={e => setSecretCode(e.target.value)} placeholder="Nhập mã bí mật..." className="flex-1 px-3 py-2 border rounded-lg text-sm" />
-                           <button onClick={unlockGodMode} className="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold">Mở Khóa</button>
+                           <input type="password" value={secretCode} onChange={e => setSecretCode(e.target.value)} placeholder={t.secretPH} className="flex-1 px-3 py-2 border rounded-lg text-sm" />
+                           <button onClick={unlockGodMode} className="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold">{t.unlock}</button>
                         </div>
                     ) : (
                         <div className="bg-slate-800 p-4 rounded-xl text-white">
-                           <h4 className="font-bold text-emerald-400 mb-3">Lịch sử 50 người làm gần nhất:</h4>
+                           <h4 className="font-bold text-emerald-400 mb-3">{t.history}</h4>
                            <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
-                              {allRecords.length === 0 ? <p className="text-xs text-slate-400">Chưa có ai làm bài.</p> : null}
+                              {allRecords.length === 0 ? <p className="text-xs text-slate-400">Trống / Empty</p> : null}
                               {allRecords.map((rec, i) => {
-                                 // Xử lý timestamp của Realtime DB
                                  const dateStr = rec.timestamp ? new Date(rec.timestamp).toLocaleString() : 'N/A';
                                  return (
-                                   <div key={i} className="bg-slate-700 p-2 rounded text-xs">
+                                   <div key={i} className="bg-slate-700 p-2 rounded text-xs flex justify-between">
                                       <span className="text-emerald-300 font-bold">{rec.ideology}</span>
-                                      <span className="text-slate-400 ml-2">({dateStr})</span>
+                                      <span className="text-slate-400 ml-2 text-[10px]">{dateStr}</span>
                                    </div>
                                  );
                               })}
@@ -776,45 +909,51 @@
             );
           }
 
+          const qText = lang === 'vi' ? questions[currentQuestion].text : (questions[currentQuestion].textEn || questions[currentQuestion].text);
+
           return (
-            <div className="max-w-2xl mx-auto p-4 md:p-8 bg-white min-h-screen flex flex-col justify-center border-x border-slate-100 shadow-sm font-sans">
-              <div className="mb-10">
+            <div className="max-w-2xl mx-auto p-4 md:p-8 bg-white min-h-screen flex flex-col justify-center border-x border-slate-100 shadow-sm font-sans relative">
+              <LangToggle />
+              <div className="mb-10 mt-6 md:mt-0">
                 <div className="flex justify-between text-xs font-bold text-slate-400 mb-3 uppercase tracking-widest">
-                  <span>Tiến trình trắc nghiệm</span>
+                  <span>{t.progress}</span>
                   <span>{currentQuestion + 1} / {questions.length}</span>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-2.5 shadow-inner p-0.5">
-                  <div className="bg-gradient-to-r from-blue-500 to-emerald-500 h-1.5 rounded-full transition-all duration-300 ease-out" style={{ width: `${((currentQuestion) / questions.length) * 100}%` }}></div>
+                  <div className="bg-gradient-to-r from-emerald-500 to-teal-500 h-1.5 rounded-full transition-all duration-300 ease-out" style={{ width: `${((currentQuestion) / questions.length) * 100}%` }}></div>
                 </div>
               </div>
 
               <div className="text-center mb-10 min-h-[160px] flex items-center justify-center">
-                <h2 className="text-2xl md:text-[28px] font-extrabold text-slate-800 leading-snug">"{questions[currentQuestion].text}"</h2>
+                <h2 className="text-2xl md:text-[28px] font-extrabold text-slate-800 leading-snug">"{qText}"</h2>
               </div>
 
               <div className="flex flex-col gap-3 md:gap-4">
-                {options.map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleOptionClick(option.value)}
-                    className={`py-4 md:py-5 px-6 rounded-2xl border-2 font-bold text-lg transition-all duration-200
-                      ${option.value === 2 ? 'border-emerald-500 text-emerald-700 bg-emerald-50/50 hover:bg-emerald-100' : 
-                        option.value === 1 ? 'border-green-400 text-green-600 bg-green-50/50 hover:bg-green-100' :
-                        option.value === 0 ? 'border-slate-200 text-slate-500 bg-slate-50 hover:bg-slate-100 hover:border-slate-300' :
-                        option.value === -1 ? 'border-orange-400 text-orange-600 bg-orange-50/50 hover:bg-orange-100' :
-                        'border-red-500 text-red-700 bg-red-50/50 hover:bg-red-100'
-                      }
-                      ${answers[currentQuestion] === option.value ? 'scale-[1.02] shadow-md ring-2 ring-offset-2 ring-slate-300 bg-white' : 'active:scale-95'}
-                    `}
-                  >
-                    {option.label}
-                  </button>
-                ))}
+                {options.map((option, index) => {
+                  const oLabel = lang === 'vi' ? option.label : option.labelEn;
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => handleOptionClick(option.value)}
+                      className={`py-4 md:py-5 px-6 rounded-2xl border-2 font-bold text-lg transition-all duration-200
+                        ${option.value === 2 ? 'border-emerald-500 text-emerald-700 bg-emerald-50/50 hover:bg-emerald-100' : 
+                          option.value === 1 ? 'border-green-400 text-green-600 bg-green-50/50 hover:bg-green-100' :
+                          option.value === 0 ? 'border-slate-200 text-slate-500 bg-slate-50 hover:bg-slate-100 hover:border-slate-300' :
+                          option.value === -1 ? 'border-orange-400 text-orange-600 bg-orange-50/50 hover:bg-orange-100' :
+                          'border-red-500 text-red-700 bg-red-50/50 hover:bg-red-100'
+                        }
+                        ${answers[currentQuestion] === option.value ? 'scale-[1.02] shadow-md ring-2 ring-offset-2 ring-slate-300 bg-white' : 'active:scale-95'}
+                      `}
+                    >
+                      {oLabel}
+                    </button>
+                  );
+                })}
               </div>
               
               {currentQuestion > 0 && (
                  <div className="mt-10 text-center">
-                    <button onClick={() => setCurrentQuestion(currentQuestion - 1)} className="text-slate-400 hover:text-slate-800 font-bold underline decoration-2 underline-offset-4 text-sm transition-colors">Quay lại câu trước</button>
+                    <button onClick={() => setCurrentQuestion(currentQuestion - 1)} className="text-slate-400 hover:text-slate-800 font-bold underline decoration-2 underline-offset-4 text-sm transition-colors">{t.backBtn}</button>
                  </div>
               )}
             </div>
