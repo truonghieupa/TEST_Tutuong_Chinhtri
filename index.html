@@ -9,7 +9,6 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- TẢI THƯ VIỆN REALTIME DATABASE THAY VÌ FIRESTORE -->
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
 
@@ -21,9 +20,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        // ==========================================
-        // CONFIG FIREBASE ĐÃ ĐƯỢC ĐIỀN ĐẦY ĐỦ CỦA BẠN
-        // ==========================================
+
         const firebaseConfig = {
             apiKey: "AIzaSyCln1z8mRd1Aq-Hdy8GMHXm-37gQ-9VMtk",
             authDomain: "testtutuong.firebaseapp.com",
@@ -34,13 +31,11 @@
             measurementId: "G-SWM9K4Z9YV",
             databaseURL: "https://testtutuong-default-rtdb.firebaseio.com" 
         };
-        // ==========================================
 
-        // Khởi tạo Firebase bằng Realtime Database
         let db = null;
         if (firebaseConfig.apiKey && !firebaseConfig.apiKey.includes("ĐIỀN_")) {
             firebase.initializeApp(firebaseConfig);
-            db = firebase.database(); // Dùng database() thay vì firestore()
+            db = firebase.database(); 
         }
 
         const { useState, useMemo, useEffect } = React;
@@ -57,9 +52,7 @@
           { id: 'societal', name: 'Xã hội', left: 'Đa văn', right: 'Đồng hóa', color: 'bg-purple-500', description: 'Hội nhập văn hóa: Tôn trọng bản sắc người nhập cư vs. Yêu cầu họ thay đổi giống văn hóa bản địa.' },
         ];
 
-        // Rút gọn bớt Database ở đây để code ngắn lại (Vẫn đủ 111 như cũ)
         const ideologies = [
-          // Nhóm Trung dung
           { name: "Chủ nghĩa Trung dung (Centrism)", description: "Giữ quan điểm ôn hòa, cân bằng và thực dụng. Tránh xa các thái cực cực đoan.", stats: { power: 0, political: -2, diplomatic: 0, military: 0, civil: 0, economic: 0, religious: 0, cultural: 0, societal: 0 } },
           { name: "Trung dung Cấp tiến (Radical Centrism)", description: "Không trung thành với triết lý nào. Sẵn sàng dùng độc tài, cộng sản hay tư bản để giải quyết vấn đề.", stats: { power: 0, political: 0, diplomatic: 0, civil: 0, economic: 0, religious: 0, cultural: -2, societal: 0 } },
           { name: "Tự do Hiện đại (Modern Liberalism)", description: "Ủng hộ dân chủ, tự do cá nhân kết hợp với nền kinh tế thị trường có sự điều tiết và phúc lợi vừa phải.", stats: { power: -2, political: -5, diplomatic: -4, civil: -4, economic: 2, religious: -4, cultural: -5, societal: -5 } },
@@ -70,7 +63,6 @@
           { name: "Tự do Trật tự (Ordoliberalism)", description: "Thị trường tự do nhưng nhà nước phải duy trì luật lệ cứng rắn để chống độc quyền và đảm bảo cạnh tranh.", stats: { power: 2, civil: 0, economic: 3, cultural: 0 } },
           { name: "Bảo thủ Tự do (Libertarian Conservatism)", description: "Nhà nước nhỏ, kinh tế tự do, nhưng cá nhân tự nguyện sống theo giá trị đạo đức truyền thống và tôn giáo.", stats: { power: -6, civil: -5, economic: 8, religious: 6, cultural: 7 } },
           
-          // Dân chủ Xã hội & Cánh Tả
           { name: "Dân chủ Xã hội (Social Democracy)", description: "Thị trường tự do nhưng nhà nước đánh thuế cao cung cấp phúc lợi. Cởi mở văn hóa và dân chủ.", stats: { political: -6, civil: -4, economic: -4, cultural: -5, societal: -4 } },
           { name: "Xã hội Chủ nghĩa Dân chủ (Democratic Socialism)", description: "Xóa bỏ tư bản để quốc hữu hóa tài sản thông qua bầu cử dân chủ, từ chối bạo lực.", stats: { power: 0, political: -8, civil: -5, economic: -8, cultural: -6 } },
           { name: "Dân túy Cánh tả (Left-Wing Populism)", description: "Đoàn kết lao động chống siêu giàu. Yêu cầu quốc hữu hóa, đánh thuế nặng và tẩy chay tư bản toàn cầu.", stats: { power: 2, political: -4, diplomatic: 4, economic: -8, cultural: -3 } },
@@ -80,7 +72,6 @@
           { name: "Chủ nghĩa Phân phối (Distributism)", description: "Tài sản và tư liệu sản xuất phải được chia nhỏ cho từng hộ gia đình sở hữu dựa trên triết lý Công giáo.", stats: { power: -3, economic: -2, religious: 6, cultural: 6 } },
           { name: "Nữ quyền Cấp tiến (Radical Feminism)", description: "Cấu trúc xã hội là sản phẩm phụ quyền. Đập bỏ hoàn toàn vai trò giới tính và gia đình truyền thống.", stats: { power: 4, civil: 3, economic: -5, religious: -8, cultural: -10, societal: -5 } },
 
-          // Vô Chính Phủ & Tự do cực độ
           { name: "Chủ nghĩa Xã hội Tự do (Libertarian Socialism)", description: "Công bằng kinh tế nhưng kịch liệt phản đối nhà nước độc đoán. Đề cao cộng đồng tự quản.", stats: { power: -7, political: -8, civil: -8, economic: -7, cultural: -6 } },
           { name: "Cộng sản Vô chính phủ (Anarcho-Communism)", description: "Không nhà nước, tiền tệ, thị trường. Làm việc theo khả năng, hưởng thụ theo nhu cầu trong công xã.", stats: { power: -10, political: -10, civil: -10, economic: -10, cultural: -8 } },
           { name: "Công đoàn Tự do (Anarcho-Syndicalism)", description: "Nhà nước bị đập bỏ qua tổng đình công. Xã hội được vận hành bởi liên đoàn lao động tự quản.", stats: { power: -9, political: -8, civil: -7, economic: -9, cultural: -5 } },
@@ -99,7 +90,6 @@
           { name: "Vô chính phủ Đồng tính (Queer Anarchism)", description: "Gắn liền đập bỏ nhà nước với việc xóa bỏ hoàn toàn khái niệm giới tính (nam/nữ) và chuẩn mực dị tính.", stats: { power: -10, civil: -10, religious: -10, cultural: -10, societal: -8 } },
           { name: "Vô chính phủ Biên viễn (Anarcho-Frontierism)", description: "Tự do tuyệt đối tồn tại ở miền Tây hoang dã hay không gian vũ trụ, nơi luật pháp chưa vươn tới.", stats: { power: -10, civil: -10, economic: 7, cultural: -2 } },
 
-          // Độc tài & Cực Hữu
           { name: "Độc tài Vị quốc (Authoritarian Nationalism)", description: "Quốc gia trên hết. Nhà nước mạnh tay dẹp bất đồng, ưu tiên quân sự và đồng hóa ngoại lai.", stats: { power: 9, political: 9, diplomatic: 9, military: 8, civil: 8, societal: 9 } },
           { name: "Bảo thủ Truyền thống (Traditional Conservatism)", description: "Đề cao ổn định xã hội, gia đình cốt lõi, vai trò tôn giáo và bảo vệ văn hóa quốc gia.", stats: { power: 4, diplomatic: 6, economic: 5, religious: 7, cultural: 7, societal: 6 } },
           { name: "Chủ nghĩa Phát xít (Fascism)", description: "Quyền lực tối thượng thuộc Nhà nước. Quân sự hóa toàn dân, đề cao thượng đẳng dân tộc.", stats: { power: 10, political: 10, diplomatic: 10, military: 10, civil: 10, religious: 2, cultural: 9, societal: 10 } },
@@ -114,7 +104,6 @@
           { name: "Thuyết Darwin Xã hội (Social Darwinism)", description: "Kẻ mạnh do gen tốt, kẻ yếu phải bị đào thải. Phản đối mọi phúc lợi xã hội cứu giúp kẻ yếu.", stats: { power: 5, civil: 6, economic: 10, cultural: 8, societal: 10 } },
           { name: "Chủ nghĩa Toàn trị (Totalitarianism)", description: "Mô hình cai trị tột đỉnh: Nhà nước kiểm soát mọi khía cạnh đời sống, suy nghĩ và kinh tế.", stats: { power: 10, political: 10, civil: 10, cultural: 5 } },
 
-          // Cực Tả & Độc tài Cánh tả
           { name: "Chủ nghĩa Marx - Lenin (Marxism-Leninism)", description: "Nhà nước mạnh mẽ nắm quyền kiểm soát tư liệu sản xuất để đạt bình đẳng tuyệt đối, bài trừ tôn giáo.", stats: { power: 8, political: 8, economic: -10, religious: -8, civil: 6 } },
           { name: "Chủ nghĩa Mao (Maoism)", description: "Cực tả độc quyền, cách mạng bạo lực nông dân và sẵn sàng phá hủy toàn bộ văn hóa cũ.", stats: { power: 9, political: 9, diplomatic: 8, economic: -10, religious: -9, cultural: -9, societal: 8 } },
           { name: "Chủ nghĩa Trotsky (Trotskyism)", description: "Cực tả chống Stalin. Xuất khẩu cộng sản ra toàn cầu bằng mọi giá qua 'Cách mạng thường trực'.", stats: { power: 7, political: 6, diplomatic: -10, economic: -10, religious: -8, cultural: -6 } },
@@ -122,7 +111,6 @@
           { name: "Quân chủ Xã hội Chủ nghĩa (Monarcho-Socialism)", description: "Quyền lực thuộc Nhà vua độc quyền, nhưng Nhà vua phân phối tài sản theo hướng Xã hội chủ nghĩa.", stats: { power: 8, political: 10, economic: -8, cultural: 5 } },
           { name: "Tự do Chống Tôn giáo (State Atheism)", description: "Nhà nước sử dụng quyền lực đàn áp tổ chức tôn giáo và truyền bá vô thần hóa toàn dân.", stats: { power: 6, civil: 5, religious: -10, cultural: -6 } },
           
-          // Kinh tế, Môi trường & Công nghệ
           { name: "Chủ nghĩa Tân tự do (Neoliberalism)", description: "Thị trường tự do, tư nhân hóa và toàn cầu hóa. Chỉ cần kinh tế không bị cản trở.", stats: { diplomatic: -6, economic: 8, cultural: -2, civil: -3 } },
           { name: "Tư bản Nhà nước (State Capitalism)", description: "Kinh tế mở cửa, tư bản hóa mạnh mẽ, nhưng hệ thống chính trị do một đảng kiểm soát chặt chẽ.", stats: { power: 8, political: 8, civil: 7, economic: 5, cultural: 2 } },
           { name: "Chủ nghĩa Kỹ trị (Technocracy)", description: "Đất nước phải được giao cho các nhà khoa học, kỹ sư và chuyên gia trị vì.", stats: { power: 5, political: 7, civil: 2, religious: -8, cultural: -5 } },
@@ -141,7 +129,6 @@
           { name: "Cai trị bằng Thuật toán (Cyberocracy)", description: "Con người tham nhũng. Đất nước giao cho Siêu AI và thuật toán điều hành lạnh lùng.", stats: { power: 8, political: 9, civil: 6, religious: -8, cultural: -6 } },
           { name: "Môi trường Tự do (Free-Market Environmentalism)", description: "Môi trường được bảo vệ tốt nhất khi tư nhân hóa tự nhiên và áp dụng quyền tài sản nghiêm ngặt.", stats: { power: -5, economic: 9, cultural: -2 } },
 
-          // Xã hội, Ngoại giao & Dị biệt
           { name: "Chủ nghĩa Hòa bình (Pacifism)", description: "Tuyệt đối phản đối chiến tranh. Quân đội phải bị giải tán, mọi xung đột giải quyết bằng thương lượng.", stats: { power: -4, diplomatic: -7, military: -10, civil: -5, cultural: -4 } },
           { name: "Chủ nghĩa Thế giới (Cosmopolitanism)", description: "Đề cao danh tính 'Công dân toàn cầu' vượt lên quốc tịch hay dân tộc, xóa ranh giới.", stats: { diplomatic: -10, military: -8, cultural: -7, societal: -10 } },
           { name: "Nhân bản Thế tục (Secular Humanism)", description: "Lấy con người và khoa học làm trung tâm, sống có đạo đức bằng lý trí không cần tôn giáo.", stats: { power: -3, political: -6, civil: -7, religious: -10, cultural: -8, societal: -8 } },
@@ -153,7 +140,6 @@
           { name: "Chủ nghĩa Posadas (Posadism)", description: "Tin rằng Chiến tranh hạt nhân và Người ngoài hành tinh mới tạo ra Xã hội Cộng sản hoàn hảo.", stats: { power: 8, diplomatic: -10, military: 10, economic: -10, religious: -10, cultural: -8 } },
           { name: "Dân chủ Phi tự do (Illiberal Democracy)", description: "Có bầu cử, nhưng chính phủ hạn chế tự do báo chí, độc quyền kiểm soát thông tin triệt tiêu đối lập.", stats: { political: 5, civil: 7, cultural: 4 } },
 
-          // Lai tạp & Ứng dụng
           { name: "Chủ nghĩa Kemal (Kemalism)", description: "Độc tài quốc gia, nhưng ép buộc thế tục hóa triệt để và hiện đại hóa văn hóa phương Tây.", stats: { power: 6, political: 4, diplomatic: 6, religious: -10, cultural: -5, societal: 6 } },
           { name: "Chủ nghĩa Peron (Peronism)", description: "Kinh tế bảo vệ công nhân, nhưng chính trị độc tài, sùng bái cá nhân và quốc gia cực hữu.", stats: { power: 7, political: 5, economic: -6, cultural: 4, societal: 7 } },
           { name: "Chủ nghĩa Ba'ath (Ba'athism)", description: "Chủ nghĩa dân tộc Arab kết hợp với kinh tế XHCN nhà nước và một đảng độc tài, thế tục.", stats: { power: 8, political: 8, diplomatic: 7, economic: -5, religious: -6, societal: 8 } },
@@ -175,7 +161,6 @@
           { name: "Tư bản Phúc lợi (Welfare Capitalism)", description: "Công ty tư nhân chủ động cung cấp bảo hiểm, nhà ở cho nhân viên để ngăn họ tham gia công đoàn.", stats: { power: 2, economic: 4, cultural: 1 } },
           { name: "Tự do Cánh tả (Left-Rothbardianism)", description: "Nếu xóa nhà nước, tập đoàn sẽ sụp đổ. Thị trường tự do thuần túy tạo bình đẳng cho lao động.", stats: { power: -9, civil: -8, economic: 4, cultural: -5 } },
 
-          // --- 11 HỆ TƯ TƯỞNG MỚI BỔ SUNG LẦN CUỐI (TỔNG 111) ---
           { name: "Tư tưởng Hồ Chí Minh (Ho Chi Minh Thought)", description: "Kết hợp Chủ nghĩa Mác-Lenin với truyền thống Việt Nam. Đề cao độc lập dân tộc, Đảng lãnh đạo, tiến lên XHCN linh hoạt.", stats: { power: 7, political: 8, diplomatic: 6, economic: -6, religious: -4, cultural: -2, societal: 5 } },
           { name: "Cộng sản Tôn giáo (Religious Communism)", description: "Xóa bỏ tư hữu và sống quần tụ bình đẳng, hoàn toàn dựa trên nền tảng giáo lý và tình yêu thương của tôn giáo.", stats: { power: -4, political: -2, economic: -10, religious: 10, cultural: 6 } },
           { name: "Cộng sản Nguyên thủy (Primitive Communism)", description: "Thời tiền sử. Không giai cấp, không nhà nước, không tư hữu, sống thành các bộ lạc săn bắt hái lượm.", stats: { power: -10, political: -8, economic: -10, cultural: 8, societal: -2 } },
@@ -343,11 +328,9 @@
           const [expandedIdeo, setExpandedIdeo] = useState(null);
           const [expandedAxis, setExpandedAxis] = useState(null);
           
-          // Thống kê Database
           const [stats, setStats] = useState({ totalVotes: 0, currentIdeoVotes: 0 });
           const [isSaving, setIsSaving] = useState(false);
           
-          // Danh sách những người khác cho chế độ God Mode
           const [allRecords, setAllRecords] = useState([]);
           const [showGodMode, setShowGodMode] = useState(false);
           const [secretCode, setSecretCode] = useState("");
@@ -429,7 +412,6 @@
             return calculatedIdeologies.sort((a, b) => a.distance - b.distance);
           };
 
-          // HÀM LƯU LÊN FIREBASE REALTIME DATABASE
           const processResultsAndSave = async () => {
             setIsSaving(true);
             setShowResults(true);
@@ -440,7 +422,6 @@
 
             if (db) {
                 try {
-                    // 1. Lưu bản ghi cá nhân vào node 'results'
                     const newRecordRef = db.ref('results').push();
                     await newRecordRef.set({
                         ideology: topMatch.name,
@@ -448,7 +429,6 @@
                         timestamp: firebase.database.ServerValue.TIMESTAMP
                     });
 
-                    // 2. Cập nhật biến đếm tổng trong node 'stats/ideologies' dùng Transaction
                     const statsRef = db.ref('stats/ideologies');
                     statsRef.transaction((currentData) => {
                         if (currentData === null) {
@@ -474,13 +454,11 @@
                     setIsSaving(false);
                 }
             } else {
-                // Nếu chưa thay Config
                 setIsSaving(false);
                 setStats({ totalVotes: 0, currentIdeoVotes: 0, error: "Chưa cấu hình Firebase" });
             }
           };
 
-          // Hàm mở khóa God Mode (Xem tất cả kết quả) - Cập nhật cho Realtime DB
           const unlockGodMode = () => {
              if (secretCode === "123456" && db) {
                  try {
@@ -490,7 +468,6 @@
                          snapshot.forEach((childSnapshot) => {
                              records.push({ id: childSnapshot.key, ...childSnapshot.val() });
                          });
-                         // Đảo ngược mảng để kết quả mới nhất lên đầu
                          setAllRecords(records.reverse());
                          setShowGodMode(true);
                      });
